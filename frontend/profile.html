@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    <h1>My Profile</h1>
+
+    <a href="index.html">Home</a>
+    <br><br>
+    <a href="myBooking.html">My Bookings</a>
+
+    <div id="profileContainer"></div>
+
+    <button id="logoutBtn">Logout</button>
+
+    <script>
+        let profileContainer = document.getElementById("profileContainer");
+        let logoutBtn = document.getElementById("logoutBtn");
+
+        let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+        if (!currentUser) {
+            alert("Please login first");
+            window.location.href = "login.html";
+        } else {
+            profileContainer.innerHTML = `
+                <h2>${currentUser.name}</h2>
+                <p>Student ID: ${currentUser.StudentId}</p>
+                <p>Email: ${currentUser.email}</p>
+                <p>Role: ${currentUser.role}</p>
+                <p>No-Show Count: ${currentUser.noShowCount}</p>
+            `;
+        }
+
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("currentUser");
+            alert("Logged out successfully");
+            window.location.href = "login.html";
+        });
+    </script>
+</body>
+</html>

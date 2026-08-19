@@ -8,6 +8,8 @@
 <body>
     <h1>My Bookings</h1>
     <a href="index.html">Home</a>
+    <br><br>
+    <a href="profile.html">Profile</a>
     <div id="bookingsContainer"></div>
 
     <script>
@@ -30,15 +32,23 @@
             } else {
                 myBookings.forEach(booking => {
                     let index = bookings.indexOf(booking);
+                    let status = getBookingStatus(booking);
 
                     bookingsContainer.innerHTML += `
                         <div>
                             <h3>Resource: ${booking.resourcesName}</h3>
                             <p>Date: ${booking.date}</p>
                             <p>Time: ${booking.startTime} - ${booking.endTime}</p>
-                            <button onclick="cancelBooking(${index})">
-                                Cancel Booking
-                            </button>
+                            <p>Status: ${status}</p>
+                            ${
+                                status === "Upcoming"
+                                ? `
+                                    <button onclick="cancelBooking(${index})">
+                                        Cancel Booking
+                                    </button>
+                                `
+                                : ""
+                            }
                         </div>
                         <hr>
                     `;
@@ -46,11 +56,56 @@
             }
         }
 
-        let cancelBooking = (index) => {
+        function getBookingStatus(booking) {
+            if (booking.status === "No-Show") {
+                return "No-Show";
+            }
+
+            if (booking.status === "Completed") {
+                return "Completed";
+            }
+
+            let now = new Date();
+            let bookingStart = new Date(
+                booking.date + "T" + booking.startTime
+            );
+            let bookingEnd = new Date(
+                booking.date + "T" + booking.endTime
+            );
+
+            if (now < bookingStart) {
+                return "Upcoming";
+            }
+
+            if (now >= bookingStart && now <= bookingEnd) {
+                return "Active";
+            }
+
+            return "Completed";
+        }
+
+        function cancelBooking(index) {
             let booking = bookings[index];
 
             if (!booking || booking.userEmail !== currentUser.email) {
                 alert("You cannot cancel this booking");
+                return;
+            }
+
+            let status = getBookingStatus(booking);
+
+            if (status === "Active") {
+                alert("You cannot cancel an active booking");
+                return;
+            }
+
+            if (status === "Completed") {
+                alert("You cannot cancel a completed booking");
+                return;
+            }
+
+            if (status === "No-Show") {
+                alert("You cannot cancel a No-Show booking");
                 return;
             }
 
@@ -64,7 +119,7 @@
             alert("Booking cancelled successfully");
 
             location.reload();
-        };
+        }
     </script>
 </body>
 </html>
