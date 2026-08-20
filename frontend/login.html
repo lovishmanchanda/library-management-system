@@ -45,16 +45,12 @@
 
         let form = document.getElementById("loginForm");
 
-        let handleSubmit = (event) => {
+        let handleSubmit = async (event) => {
 
             event.preventDefault();
 
             let email = document.getElementById("email");
             let password = document.getElementById("password");
-
-            let all_users =
-                JSON.parse(localStorage.getItem("users")) || [];
-
 
             // Check empty fields
             if (
@@ -65,6 +61,8 @@
                 return;
             }
 
+            let response = await fetch("http://localhost:3000/users");
+            let all_users = await response.json();
 
             // Find user
             let exist = all_users.find(user =>
@@ -72,15 +70,14 @@
                 user.password === password.value.trim()
             );
 
-
             // User not found
             if (!exist) {
-
                 alert("Invalid Email or Password");
                 return;
-
             }
 
+            // Remove password before saving
+            delete exist.password;
 
             // Save logged-in user
             localStorage.setItem(
@@ -88,9 +85,7 @@
                 JSON.stringify(exist)
             );
 
-
             alert("Login successful");
-
 
             // Go to home page
             window.location.href = "index.html";

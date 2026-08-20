@@ -14,64 +14,92 @@
 
     <script>
         let bookingsContainer = document.getElementById("bookingsContainer");
-        let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
         let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        
+        let resources = [];
+        let myBookings = [];
 
         if (!currentUser) {
             alert("Please login first");
             window.location.href = "login.html";
         } else {
-            let myBookings = bookings.filter(booking =>
-                booking.userEmail === currentUser.email
-            );
+            loadBookings();
+        }
+
+        async function loadBookings() {
+            try {
+                let resResp = await fetch("http://localhost:3000/resources");
+                resources = await resResp.json();
+
+                let reqResp = await fetch("http://localhost:3000/reservations");
+                let allReservations = await reqResp.json();
+
+                myBookings = allReservations.filter(reservation =>
+                    String(reservation.userId) === String(currentUser.id)
+                );
+
+                renderBookings();
+            } catch (error) {
+                console.error("Error loading data:", error);
+            }
+        }
+
+        function renderBookings() {
+            bookingsContainer.innerHTML = "";
 
             if (myBookings.length === 0) {
                 bookingsContainer.innerHTML = `
                     <p>You have no bookings yet.</p>
                 `;
-            } else {
-                myBookings.forEach(booking => {
-                    let index = bookings.indexOf(booking);
-                    let status = getBookingStatus(booking);
-
-                    bookingsContainer.innerHTML += `
-                        <div>
-                            <h3>Resource: ${booking.resourcesName}</h3>
-                            <p>Date: ${booking.date}</p>
-                            <p>Time: ${booking.startTime} - ${booking.endTime}</p>
-                            <p>Status: ${status}</p>
-                            ${
-                                status === "Upcoming"
-                                ? `
-                                    <button onclick="cancelBooking(${index})">
-                                        Cancel Booking
-                                    </button>
-                                `
-                                : ""
-                            }
-                        </div>
-                        <hr>
-                    `;
-                });
+                return;
             }
+
+            myBookings.forEach(booking => {
+                let resource = resources.find(r => String(r.id) === String(booking.resourceId));
+                let resourceName = resource ? resource.label : "Unknown Resource";
+                
+                let timeStatus = getTimeStatus(booking);
+                let displayStatus = booking.status;
+                if (
+                    booking.status === "cancelled" ||
+                    booking.status === "completed" ||
+                    booking.status === "no_show"
+                ) {
+                    timeStatus = "";
+                }
+
+                let canCancel = false;
+                if (booking.status === "pending" || booking.status === "confirmed") {
+                    if (timeStatus === "Upcoming") {
+                        canCancel = true;
+                    }
+                }
+
+                bookingsContainer.innerHTML += `
+                    <div>
+                        <h3>Resource: ${resourceName}</h3>
+                        <p>Date: ${booking.date}</p>
+                        <p>Time: ${booking.startTime} - ${booking.endTime}</p>
+                        <p>Status: ${displayStatus}${timeStatus ? ` (${timeStatus})` : ""}</p>
+                        ${
+                            canCancel
+                            ? `
+                                <button onclick="cancelBooking('${booking.id}')">
+                                    Cancel Booking
+                                </button>
+                            `
+                            : ""
+                        }
+                    </div>
+                    <hr>
+                `;
+            });
         }
 
-        function getBookingStatus(booking) {
-            if (booking.status === "No-Show") {
-                return "No-Show";
-            }
-
-            if (booking.status === "Completed") {
-                return "Completed";
-            }
-
+        function getTimeStatus(booking) {
             let now = new Date();
-            let bookingStart = new Date(
-                booking.date + "T" + booking.startTime
-            );
-            let bookingEnd = new Date(
-                booking.date + "T" + booking.endTime
-            );
+            let bookingStart = new Date(booking.date + "T" + booking.startTime);
+            let bookingEnd = new Date(booking.date + "T" + booking.endTime);
 
             if (now < bookingStart) {
                 return "Upcoming";
@@ -84,41 +112,50 @@
             return "Completed";
         }
 
-        function cancelBooking(index) {
-            let booking = bookings[index];
+        async function cancelBooking(id) {
+            let booking = myBookings.find(b => String(b.id) === String(id));
 
-            if (!booking || booking.userEmail !== currentUser.email) {
+            if (!booking) {
                 alert("You cannot cancel this booking");
                 return;
             }
 
-            let status = getBookingStatus(booking);
+            let timeStatus = getTimeStatus(booking);
 
-            if (status === "Active") {
+            if (timeStatus === "Active") {
                 alert("You cannot cancel an active booking");
                 return;
             }
 
-            if (status === "Completed") {
+            if (timeStatus === "Completed") {
                 alert("You cannot cancel a completed booking");
                 return;
             }
 
-            if (status === "No-Show") {
-                alert("You cannot cancel a No-Show booking");
+            if (booking.status === "cancelled" || booking.status === "completed" || booking.status === "no_show") {
+                alert("You cannot cancel this booking");
                 return;
             }
 
-            bookings.splice(index, 1);
+            try {
+                let response = await fetch("http://localhost:3000/reservations/" + id, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ status: "cancelled" })
+                });
 
-            localStorage.setItem(
-                "bookings",
-                JSON.stringify(bookings)
-            );
-
-            alert("Booking cancelled successfully");
-
-            location.reload();
+                if (response.ok) {
+                    alert("Booking cancelled successfully");
+                    loadBookings();
+                } else {
+                    alert("Failed to cancel booking");
+                }
+            } catch (error) {
+                console.error("Error cancelling booking:", error);
+                alert("Unable to connect to server");
+            }
         }
     </script>
 </body>

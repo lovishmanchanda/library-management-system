@@ -1,305 +1,586 @@
 {
+  "users": [
+    {
+      "id": "1",
+      "name": "Aarav Sharma",
+      "studentId": "2310991234",
+      "email": "aarav.sharma@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Computer Science",
+      "semester": 5,
+      "noShowCount": 0,
+      "reliabilityScore": 98,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "2",
+      "name": "Priya Nair",
+      "studentId": "2310991235",
+      "email": "priya.nair@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Electronics Engineering",
+      "semester": 3,
+      "noShowCount": 2,
+      "reliabilityScore": 84,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "3",
+      "name": "Rohan Verma",
+      "studentId": "2210991108",
+      "email": "rohan.verma@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Mechanical Engineering",
+      "semester": 7,
+      "noShowCount": 5,
+      "reliabilityScore": 52,
+      "suspended": true,
+      "suspendedUntil": "2026-09-05",
+      "suspendReason": "Exceeded maximum no-show limit"
+    },
+    {
+      "id": "4",
+      "name": "Ishita Kapoor",
+      "studentId": "2410991001",
+      "email": "ishita.kapoor@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Computer Science",
+      "semester": 1,
+      "noShowCount": 0,
+      "reliabilityScore": 100,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "5",
+      "name": "Dr. Sanjay Mehta",
+      "studentId": "FAC100234",
+      "email": "sanjay.mehta@university.edu",
+      "password": "password123",
+      "role": "faculty",
+      "department": "Physics",
+      "semester": null,
+      "noShowCount": 0,
+      "reliabilityScore": 100,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "6",
+      "name": "Neha Joshi",
+      "studentId": "2310991456",
+      "email": "neha.joshi@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Biotechnology",
+      "semester": 4,
+      "noShowCount": 1,
+      "reliabilityScore": 91,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "7",
+      "name": "Karan Malhotra",
+      "studentId": "2110991322",
+      "email": "karan.malhotra@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Civil Engineering",
+      "semester": 6,
+      "noShowCount": 3,
+      "reliabilityScore": 70,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "8",
+      "name": "Ananya Iyer",
+      "studentId": "2310991789",
+      "email": "ananya.iyer@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Computer Science",
+      "semester": 5,
+      "noShowCount": 0,
+      "reliabilityScore": 97,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "9",
+      "name": "Mr. Vikram Rao",
+      "studentId": "LIB100045",
+      "email": "vikram.rao@university.edu",
+      "password": "password123",
+      "role": "librarian",
+      "department": "Library Administration",
+      "semester": null,
+      "noShowCount": 0,
+      "reliabilityScore": 100,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "10",
+      "name": "Simran Kaur",
+      "studentId": "2410991567",
+      "email": "simran.kaur@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Mathematics",
+      "semester": 2,
+      "noShowCount": 4,
+      "reliabilityScore": 60,
+      "suspended": true,
+      "suspendedUntil": "2026-08-25",
+      "suspendReason": "Repeated late cancellations"
+    },
+    {
+      "id": "11",
+      "name": "Aditya Singh",
+      "studentId": "2010991890",
+      "email": "aditya.singh@university.edu",
+      "password": "password123",
+      "role": "student",
+      "department": "Electrical Engineering",
+      "semester": 8,
+      "noShowCount": 1,
+      "reliabilityScore": 88,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "id": "12",
+      "name": "Admin User",
+      "studentId": "ADM100001",
+      "email": "admin@university.edu",
+      "password": "password123",
+      "role": "admin",
+      "department": "Library Administration",
+      "semester": null,
+      "noShowCount": 0,
+      "reliabilityScore": 100,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null
+    },
+    {
+      "name": "Lovish Manchanda",
+      "studentId": "2410805305",
+      "email": "lovish@gmail.com",
+      "password": "12345678",
+      "role": "student",
+      "department": "",
+      "semester": null,
+      "noShowCount": 0,
+      "reliabilityScore": 100,
+      "suspended": false,
+      "suspendedUntil": null,
+      "suspendReason": null,
+      "id": "dE7LkzrSL6U"
+    }
+  ],
   "resources": [
     {
-      "id": "S-001",
-      "name": "S-001",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "1",
+      "label": "Silent Study Room A1",
+      "type": "study room",
+      "zone": "Silent Zone",
+      "capacity": 4,
+      "available": true
     },
     {
-      "id": "S-002",
-      "name": "S-002",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "2",
+      "label": "Silent Study Room A2",
+      "type": "study room",
+      "zone": "Silent Zone",
+      "capacity": 4,
+      "available": false
     },
     {
-      "id": "S-003",
-      "name": "S-003",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "3",
+      "label": "Group Discussion Room B1",
+      "type": "discussion_room",
+      "zone": "Collaborative Zone",
+      "capacity": 8,
+      "available": true
     },
     {
-      "id": "S-004",
-      "name": "S-004",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "4",
+      "label": "Group Discussion Room B2",
+      "type": "discussion_room",
+      "zone": "Collaborative Zone",
+      "capacity": 6,
+      "available": true
     },
     {
-      "id": "S-005",
-      "name": "S-005",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "5",
+      "label": "Individual Carrel C1",
+      "type": "carrel",
+      "zone": "Quiet Zone",
+      "capacity": 1,
+      "available": true
     },
     {
-      "id": "S-006",
-      "name": "S-006",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "6",
+      "label": "Individual Carrel C2",
+      "type": "carrel",
+      "zone": "Quiet Zone",
+      "capacity": 1,
+      "available": false
     },
     {
-      "id": "S-007",
-      "name": "S-007",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "7",
+      "label": "Computer Workstation D1",
+      "type": "computer station",
+      "zone": "Digital Lab",
+      "capacity": 1,
+      "available": true
     },
     {
-      "id": "S-008",
-      "name": "S-008",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "8",
+      "label": "Computer Workstation D2",
+      "type": "computer station",
+      "zone": "Digital Lab",
+      "capacity": 1,
+      "available": true
     },
     {
-      "id": "S-009",
-      "name": "S-009",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
+      "id": "9",
+      "label": "Seminar Hall E1",
+      "type": "seminar hall",
+      "zone": "Conference Zone",
+      "capacity": 30,
+      "available": true
     },
     {
-      "id": "S-010",
-      "name": "S-010",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-011",
-      "name": "S-011",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-012",
-      "name": "S-012",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-013",
-      "name": "S-013",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-014",
-      "name": "S-014",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-015",
-      "name": "S-015",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-016",
-      "name": "S-016",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-017",
-      "name": "S-017",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-018",
-      "name": "S-018",
-      "type": "seat",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-019",
-      "name": "S-019",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-020",
-      "name": "S-020",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-021",
-      "name": "S-021",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-022",
-      "name": "S-022",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-023",
-      "name": "S-023",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-024",
-      "name": "S-024",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-025",
-      "name": "S-025",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-026",
-      "name": "S-026",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-027",
-      "name": "S-027",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-028",
-      "name": "S-028",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-029",
-      "name": "S-029",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-030",
-      "name": "S-030",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-031",
-      "name": "S-031",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-032",
-      "name": "S-032",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-033",
-      "name": "S-033",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-034",
-      "name": "S-034",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-035",
-      "name": "S-035",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-036",
-      "name": "S-036",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-037",
-      "name": "S-037",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "S-038",
-      "name": "S-038",
-      "type": "seat",
-      "zone": "South Wing",
-      "capacity": 1
-    },
-    {
-      "id": "ROOM-A",
-      "name": "Discussion Room A",
-      "type": "discussion-room",
-      "zone": "North Wing",
-      "capacity": 6
-    },
-    {
-      "id": "ROOM-B",
-      "name": "Discussion Room B",
-      "type": "discussion-room",
-      "zone": "North Wing",
-      "capacity": 6
-    },
-    {
-      "id": "ROOM-C",
-      "name": "Discussion Room C",
-      "type": "discussion-room",
-      "zone": "South Wing",
-      "capacity": 6
-    },
-    {
-      "id": "PROJECTOR-1",
-      "name": "Projector 1",
-      "type": "projector",
-      "zone": "North Wing",
-      "capacity": 1
-    },
-    {
-      "id": "PROJECTOR-2",
-      "name": "Projector 2",
-      "type": "projector",
-      "zone": "South Wing",
-      "capacity": 1
+      "id": "10",
+      "label": "Reading Pod F1",
+      "type": "reading pod",
+      "zone": "Open Reading Zone",
+      "capacity": 2,
+      "available": true
     }
-  ]
+  ],
+  "reservations": [
+    {
+      "id": "1",
+      "userId": 1,
+      "resourceId": 1,
+      "date": "2026-08-21",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "status": "confirmed",
+      "priorityScore": 85,
+      "checkedIn": false,
+      "createdAt": "2026-08-18T10:15:00.000Z"
+    },
+    {
+      "id": "2",
+      "userId": 2,
+      "resourceId": 3,
+      "date": "2026-08-21",
+      "startTime": "13:00",
+      "endTime": "15:00",
+      "status": "confirmed",
+      "priorityScore": 72,
+      "checkedIn": true,
+      "createdAt": "2026-08-19T08:30:00.000Z"
+    },
+    {
+      "id": "3",
+      "userId": 4,
+      "resourceId": 5,
+      "date": "2026-08-20",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "status": "completed",
+      "priorityScore": 95,
+      "checkedIn": true,
+      "createdAt": "2026-08-17T09:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "userId": 7,
+      "resourceId": 6,
+      "date": "2026-08-19",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "status": "no-show",
+      "priorityScore": 40,
+      "checkedIn": false,
+      "createdAt": "2026-08-16T11:45:00.000Z"
+    },
+    {
+      "id": "5",
+      "userId": 6,
+      "resourceId": 4,
+      "date": "2026-08-22",
+      "startTime": "11:00",
+      "endTime": "13:00",
+      "status": "confirmed",
+      "priorityScore": 78,
+      "checkedIn": false,
+      "createdAt": "2026-08-19T14:20:00.000Z"
+    },
+    {
+      "id": "6",
+      "userId": 8,
+      "resourceId": 7,
+      "date": "2026-08-21",
+      "startTime": "15:00",
+      "endTime": "17:00",
+      "status": "confirmed",
+      "priorityScore": 90,
+      "checkedIn": false,
+      "createdAt": "2026-08-18T16:00:00.000Z"
+    },
+    {
+      "id": "7",
+      "userId": 11,
+      "resourceId": 8,
+      "date": "2026-08-20",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "status": "cancelled",
+      "priorityScore": 65,
+      "checkedIn": false,
+      "createdAt": "2026-08-15T12:00:00.000Z"
+    },
+    {
+      "id": "8",
+      "userId": 5,
+      "resourceId": 9,
+      "date": "2026-08-23",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "status": "confirmed",
+      "priorityScore": 99,
+      "checkedIn": false,
+      "createdAt": "2026-08-19T09:10:00.000Z"
+    },
+    {
+      "id": "9",
+      "userId": 2,
+      "resourceId": 10,
+      "date": "2026-08-18",
+      "startTime": "16:00",
+      "endTime": "18:00",
+      "status": "completed",
+      "priorityScore": 68,
+      "checkedIn": true,
+      "createdAt": "2026-08-14T13:30:00.000Z"
+    },
+    {
+      "id": "10",
+      "userId": 10,
+      "resourceId": 1,
+      "date": "2026-08-17",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "status": "no-show",
+      "priorityScore": 35,
+      "checkedIn": false,
+      "createdAt": "2026-08-13T10:00:00.000Z"
+    },
+    {
+      "id": "11",
+      "userId": 1,
+      "resourceId": 3,
+      "date": "2026-08-25",
+      "startTime": "12:00",
+      "endTime": "14:00",
+      "status": "confirmed",
+      "priorityScore": 87,
+      "checkedIn": false,
+      "createdAt": "2026-08-20T07:45:00.000Z"
+    },
+    {
+      "id": "12",
+      "userId": 4,
+      "resourceId": 7,
+      "date": "2026-08-24",
+      "startTime": "13:00",
+      "endTime": "15:00",
+      "status": "confirmed",
+      "priorityScore": 96,
+      "checkedIn": false,
+      "createdAt": "2026-08-20T08:05:00.000Z"
+    },
+    {
+      "id": "13",
+      "userId": 6,
+      "resourceId": 5,
+      "date": "2026-08-16",
+      "startTime": "10:00",
+      "endTime": "11:00",
+      "status": "completed",
+      "priorityScore": 80,
+      "checkedIn": true,
+      "createdAt": "2026-08-12T15:00:00.000Z"
+    },
+    {
+      "id": "14",
+      "userId": 8,
+      "resourceId": 4,
+      "date": "2026-08-26",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "status": "confirmed",
+      "priorityScore": 92,
+      "checkedIn": false,
+      "createdAt": "2026-08-20T09:30:00.000Z"
+    },
+    {
+      "id": "15",
+      "userId": 11,
+      "resourceId": 9,
+      "date": "2026-08-27",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "status": "confirmed",
+      "priorityScore": 75,
+      "checkedIn": false,
+      "createdAt": "2026-08-20T10:00:00.000Z"
+    },
+    {
+      "id": "16",
+      "userId": 7,
+      "resourceId": 10,
+      "date": "2026-08-15",
+      "startTime": "11:00",
+      "endTime": "12:00",
+      "status": "cancelled",
+      "priorityScore": 55,
+      "checkedIn": false,
+      "createdAt": "2026-08-11T09:00:00.000Z"
+    },
+    {
+      "id": "17",
+      "userId": 2,
+      "resourceId": 6,
+      "date": "2026-08-28",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "status": "confirmed",
+      "priorityScore": 70,
+      "checkedIn": false,
+      "createdAt": "2026-08-20T11:15:00.000Z"
+    },
+    {
+      "id": "18",
+      "userId": 4,
+      "resourceId": 1,
+      "date": "2026-08-14",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "status": "completed",
+      "priorityScore": 94,
+      "checkedIn": true,
+      "createdAt": "2026-08-10T08:00:00.000Z"
+    },
+    {
+      "id": "19",
+      "userId": 6,
+      "resourceId": 8,
+      "date": "2026-08-29",
+      "startTime": "15:00",
+      "endTime": "17:00",
+      "status": "confirmed",
+      "priorityScore": 82,
+      "checkedIn": false,
+      "createdAt": "2026-08-20T12:40:00.000Z"
+    },
+    {
+      "id": "20",
+      "userId": 1,
+      "resourceId": 9,
+      "date": "2026-08-13",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "status": "no-show",
+      "priorityScore": 45,
+      "checkedIn": false,
+      "createdAt": "2026-08-09T10:20:00.000Z"
+    },
+    {
+      "userId": "dE7LkzrSL6U",
+      "resourceId": "1",
+      "date": "2026-08-21",
+      "startTime": "12:12",
+      "endTime": "12:13",
+      "status": "pending",
+      "priorityScore": null,
+      "checkedIn": false,
+      "createdAt": "2026-08-19T20:44:13.793Z",
+      "id": "bT6yQZ3mdxw"
+    },
+    {
+      "userId": "dE7LkzrSL6U",
+      "resourceId": "1",
+      "date": "2026-08-21",
+      "startTime": "11:00",
+      "endTime": "12:00",
+      "status": "pending",
+      "priorityScore": null,
+      "checkedIn": false,
+      "createdAt": "2026-08-19T20:46:46.279Z",
+      "id": "ggr9TGVIxjE"
+    },
+    {
+      "userId": "dE7LkzrSL6U",
+      "resourceId": "1",
+      "date": "2026-08-22",
+      "startTime": "11:00",
+      "endTime": "13:00",
+      "status": "cancelled",
+      "priorityScore": null,
+      "checkedIn": false,
+      "createdAt": "2026-08-19T20:52:18.916Z",
+      "id": "agrNwCGHQJA"
+    }
+  ],
+  "examWindows": [
+    {
+      "id": "1",
+      "title": "Mid-Semester Examinations - Odd Semester",
+      "startDate": "2026-09-15",
+      "endDate": "2026-09-25"
+    },
+    {
+      "id": "2",
+      "title": "End-Semester Examinations - Odd Semester",
+      "startDate": "2026-11-20",
+      "endDate": "2026-12-05"
+    },
+    {
+      "id": "3",
+      "title": "Backlog / Supplementary Exams",
+      "startDate": "2026-10-10",
+      "endDate": "2026-10-15"
+    },
+    {
+      "id": "4",
+      "title": "Practical & Viva Examinations",
+      "startDate": "2026-11-10",
+      "endDate": "2026-11-18"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

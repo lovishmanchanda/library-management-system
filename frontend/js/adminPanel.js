@@ -1,21 +1,25 @@
 // ********************************************************************************************************************************************************
+const API_BASE = "http://localhost:3000";
+
 // 1. Admin Reservation OverSight Panel:
 // ********************************************************************************************************************************************************
 
-function getUserName(userId) {
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  let user = users.find((u) => u.id === userId);
+function getUserName(userId, users) {
+  let user = users.find((u) => String(u.id) === String(userId));
   return user ? user.name : "Unknown";
 }
 
-function getResourceLabel(resourceId) {
-  let resources = JSON.parse(localStorage.getItem("resources")) || [];
-  let resource = resources.find((r) => r.id === resourceId);
+function getResourceLabel(resourceId, resources) {
+  let resource = resources.find((r) => String(r.id) === String(resourceId));
   return resource ? resource.label : "Unknown";
 }
 
-function renderReservationTable() {
-  let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+async function renderReservationTable() {
+  let [reservations, users, resources] = await Promise.all([
+    fetch(`${API_BASE}/reservations`).then(r => r.json()),
+    fetch(`${API_BASE}/users`).then(r => r.json()),
+    fetch(`${API_BASE}/resources`).then(r => r.json())
+  ]);
   let tbody = document.getElementById("reservationsTableBody");
   tbody.innerHTML = "";
 
@@ -53,8 +57,8 @@ function renderReservationTable() {
     let row = document.createElement("tr");
 
     let data = [
-      getUserName(reservation.userId),
-      getResourceLabel(reservation.resourceId),
+      getUserName(reservation.userId, users),
+      getResourceLabel(reservation.resourceId, resources),
       reservation.date,
       reservation.startTime + " - " + reservation.endTime,
       reservation.priorityScore ?? "—",
@@ -156,44 +160,48 @@ function createButton(text, onClick) {
   return button;
 }
 
-function updateReservationStatus(id, newStatus) {
-  let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
-  let reservation = reservations.find((r) => r.id === id);
-  if (reservation) {
-    reservation.status = newStatus;
-    localStorage.setItem("reservations", JSON.stringify(reservations));
+async function updateReservationStatus(id, newStatus) {
+  await fetch(`${API_BASE}/reservations/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus })
+  });
+  renderReservationTable();
+}
+
+async function deleteReservation(id) {
+  let reservation = await fetch(`${API_BASE}/reservations/${id}`).then(res => res.json());
+  if (!reservation) return;
+
+  let user = await fetch(`${API_BASE}/users/${reservation.userId}`).then(res => res.json());
+  let userName = user ? user.name : "Unknown";
+
+  let confirmDelete = confirm(
+    `Are you sure you want to delete the reservation for ${userName} on ${reservation.date}?`
+  );
+  if (confirmDelete) {
+    await fetch(`${API_BASE}/reservations/${id}`, { method: "DELETE" });
     renderReservationTable();
   }
 }
 
-function deleteReservation(id) {
-  let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
-  let reservation = reservations.find((r) => r.id === id);
-  if (reservation) {
-    let confirmDelete = confirm(
-      `Are you sure you want to delete the reservation for ${getUserName(reservation.userId)} on ${reservation.date}?`,
-    );
-    if (confirmDelete) {
-      reservations = reservations.filter((r) => r.id !== id);
-      localStorage.setItem("reservations", JSON.stringify(reservations));
-      renderReservationTable();
-    }
-  }
-}
-
-function markAsNoShow(id) {
-  let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
-  let reservation = reservations.find((r) => r.id === id);
+async function markAsNoShow(id) {
+  let reservation = await fetch(`${API_BASE}/reservations/${id}`).then(res => res.json());
   if (!reservation) return;
 
-  reservation.status = "no_show";
-  localStorage.setItem("reservations", JSON.stringify(reservations));
+  await fetch(`${API_BASE}/reservations/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "no_show" })
+  });
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  let user = users.find((u) => u.id === reservation.userId);
+  let user = await fetch(`${API_BASE}/users/${reservation.userId}`).then(res => res.json());
   if (user) {
-    user.noShowCount = (user.noShowCount || 0) + 1;
-    localStorage.setItem("users", JSON.stringify(users));
+    await fetch(`${API_BASE}/users/${reservation.userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ noShowCount: (user.noShowCount || 0) + 1 })
+    });
   }
   renderReservationTable();
 }
@@ -205,8 +213,8 @@ wireReservationFilters();
 // 2. Admin Resource Management Panel:
 // ********************************************************************************************************************************************************
 
-function renderResourcesTable() {
-  let resources = JSON.parse(localStorage.getItem("resources")) || [];
+async function renderResourcesTable() {
+  let resources = await fetch(`${API_BASE}/resources`).then(res => res.json());
   let tbody = document.getElementById("resourcesTableBody");
   tbody.innerHTML = "";
 
@@ -250,19 +258,16 @@ function createResourceButtons(resource) {
   return actionsTd;
 }
 
-function deleteResource(id) {
-  let resources = JSON.parse(localStorage.getItem("resources")) || [];
-  let resource = resources.find((r) => r.id === id);
-
+async function deleteResource(id) {
+  let resource = await fetch(`${API_BASE}/resources/${id}`).then(res => res.json());
   if (!resource) return;
 
-  let confirmDelete = confirm(`Are you sure you want to delete "${resource.label}"?\nExisting reservations will not be removed.`);
+  let confirmDelete = confirm(
+    `Are you sure you want to delete "${resource.label}"?\nExisting reservations will not be removed.`
+  );
 
   if (confirmDelete) {
-    resources = resources.filter((r) => r.id !== id);
-
-    localStorage.setItem("resources", JSON.stringify(resources));
-
+    await fetch(`${API_BASE}/resources/${id}`, { method: "DELETE" });
     renderResourcesTable();
   }
 }
@@ -287,36 +292,34 @@ function resetResourceForm() {
   document.getElementById("resourceCancelEditBtn").hidden = true;
 }
 
-function addResource(resource) {
-  let resources = JSON.parse(localStorage.getItem("resources")) || [];
-
+async function addResource(resource) {
   let newResource = {
-    id: "r_" + Date.now(),
     label: resource.label,
     type: resource.type,
     zone: resource.zone,
     capacity: Number(resource.capacity),
+    available: true
   };
 
-  resources.push(newResource);
-  localStorage.setItem("resources", JSON.stringify(resources));
+  await fetch(`${API_BASE}/resources`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newResource)
+  });
   renderResourcesTable();
 }
 
-function updateResource(id, resource) {
-  let resources = JSON.parse(localStorage.getItem("resources")) || [];
-
-  let existingResource = resources.find((r) => r.id === id);
-
-  if (!existingResource) return;
-
-  existingResource.label = resource.label;
-  existingResource.type = resource.type;
-  existingResource.zone = resource.zone;
-  existingResource.capacity = Number(resource.capacity);
-
-  localStorage.setItem("resources", JSON.stringify(resources));
-
+async function updateResource(id, resource) {
+  await fetch(`${API_BASE}/resources/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      label: resource.label,
+      type: resource.type,
+      zone: resource.zone,
+      capacity: Number(resource.capacity)
+    })
+  });
   renderResourcesTable();
 }
 
@@ -389,14 +392,14 @@ function wireUserSearch() {
   });
 }
 
-function renderUserSearchResults(term) {
+async function renderUserSearchResults(term) {
   let resultsDiv = document.getElementById("userSearchResults");
   resultsDiv.innerHTML = "";
 
   let cleanTerm = term.trim().toLowerCase();
   if (!cleanTerm) return;
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  let users = await fetch(`${API_BASE}/users`).then(res => res.json());
   let matches = users.filter((user) =>
     user.name.toLowerCase().includes(cleanTerm)
   );
@@ -435,11 +438,10 @@ function renderUserSearchResults(term) {
 // PROFILE
 // ---------------------------------------------------------
 
-function openUserProfile(userId) {
+async function openUserProfile(userId) {
   selectedUserId = userId;
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  let user = users.find((u) => u.id === userId);
+  let user = await fetch(`${API_BASE}/users/${userId}`).then(res => res.json());
   if (!user) return;
 
   document.getElementById("section-user-profile").hidden = false;
@@ -452,7 +454,7 @@ function openUserProfile(userId) {
   document.getElementById("userProfileReliability").innerText =
     getReliabilityScore(user);
 
-  renderPriorityBreakdown(user);
+  await renderPriorityBreakdown(user);
   renderUserBookingHistory(userId);
   renderSuspendStatus(user);
 }
@@ -462,13 +464,13 @@ function getReliabilityScore(user) {
   return Math.max(0, 100 - strikes * 15);
 }
 
-function renderPriorityBreakdown(user) {
+async function renderPriorityBreakdown(user) {
   let breakdownList = document.getElementById("userProfilePriorityBreakdown");
   breakdownList.innerHTML = "";
 
   let roleRaw = ROLE_WEIGHTS[user.role] ?? 30;
   let reliRaw = getReliabilityScore(user);
-let examRaw = getExamProximityScore(user.role, getTodayDate());
+  let examRaw = await getExamProximityScore(user.role, getTodayDate());
   let roleWeighted = roleRaw * 0.5;
   let reliWeighted = reliRaw * 0.3;
   let examWeighted = examRaw * 0.2;
@@ -501,8 +503,11 @@ let examRaw = getExamProximityScore(user.role, getTodayDate());
 // BOOKING HISTORY
 // ---------------------------------------------------------
 
-function renderUserBookingHistory(userId) {
-  let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+async function renderUserBookingHistory(userId) {
+  let [reservations, resources] = await Promise.all([
+    fetch(`${API_BASE}/reservations`).then(res => res.json()),
+    fetch(`${API_BASE}/resources`).then(res => res.json())
+  ]);
   let userReservations = reservations.filter((r) => r.userId === userId);
 
   userReservations.sort((a, b) => {
@@ -519,7 +524,7 @@ function renderUserBookingHistory(userId) {
     let row = document.createElement("tr");
 
     let data = [
-      getResourceLabel(reservation.resourceId),
+      getResourceLabel(reservation.resourceId, resources),
       reservation.date,
       reservation.startTime + " - " + reservation.endTime,
       reservation.status,
@@ -561,36 +566,40 @@ function renderSuspendStatus(user) {
   }
 }
 
-function suspendUser(userId, durationValue, reason) {
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  let user = users.find((u) => u.id === userId);
-  if (!user) return;
-
-  user.suspended = true;
-  user.suspendReason = reason;
+async function suspendUser(userId, durationValue, reason) {
+  let updates = {
+    suspended: true,
+    suspendReason: reason,
+  };
 
   if (durationValue === "indefinite") {
-    user.suspendedUntil = null;
+    updates.suspendedUntil = null;
   } else {
     let until = new Date();
     until.setDate(until.getDate() + Number(durationValue));
-    user.suspendedUntil = until.toISOString().slice(0, 10);
+    updates.suspendedUntil = until.toISOString().slice(0, 10);
   }
 
-  localStorage.setItem("users", JSON.stringify(users));
+  let user = await fetch(`${API_BASE}/users/${userId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates)
+  }).then(res => res.json());
+
   renderSuspendStatus(user);
 }
 
-function unsuspendUser(userId) {
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  let user = users.find((u) => u.id === userId);
-  if (!user) return;
+async function unsuspendUser(userId) {
+  let user = await fetch(`${API_BASE}/users/${userId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      suspended: false,
+      suspendedUntil: null,
+      suspendReason: ""
+    })
+  }).then(res => res.json());
 
-  user.suspended = false;
-  user.suspendedUntil = null;
-  user.suspendReason = "";
-
-  localStorage.setItem("users", JSON.stringify(users));
   renderSuspendStatus(user);
 }
 
@@ -640,8 +649,8 @@ function isHappeningNow(reservation) {
   return now >= start && now <= end;
 }
 
-function renderDashboardStats() {
-  let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+async function renderDashboardStats() {
+  let reservations = await fetch(`${API_BASE}/reservations`).then(res => res.json());
   let today = getTodayDate();
 
   let totalToday = reservations.filter((r) => r.date === today).length;
@@ -657,8 +666,12 @@ function renderDashboardStats() {
   document.getElementById("statNoShowsToday").innerText = noShowsToday;
 }
 
-function renderLiveBookings() {
-  let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+async function renderLiveBookings() {
+  let [reservations, users, resources] = await Promise.all([
+    fetch(`${API_BASE}/reservations`).then(r => r.json()),
+    fetch(`${API_BASE}/users`).then(r => r.json()),
+    fetch(`${API_BASE}/resources`).then(r => r.json())
+  ]);
   let liveReservations = reservations.filter(isHappeningNow);
 
   let tbody = document.getElementById("liveBookingsTableBody");
@@ -671,8 +684,8 @@ function renderLiveBookings() {
     let row = document.createElement("tr");
 
     let data = [
-      getUserName(reservation.userId),
-      getResourceLabel(reservation.resourceId),
+      getUserName(reservation.userId, users),
+      getResourceLabel(reservation.resourceId, resources),
       reservation.startTime,
       reservation.endTime,
       reservation.checkedIn ? "Yes" : "No",
@@ -704,23 +717,21 @@ document.addEventListener("adminview:shown", function (e) {
 // 5. Admin Settings — Exam Window Management:
 // ********************************************************************************************************************************************************
 
-function getExamWindows() {
-  return JSON.parse(localStorage.getItem("examWindows")) || [];
+async function getExamWindows() {
+  return await fetch(`${API_BASE}/examWindows`).then(res => res.json());
 }
 
-function saveExamWindows(windows) {
-  localStorage.setItem("examWindows", JSON.stringify(windows));
-}
 
-function renderExamWindowsTable() {
-  let windows = getExamWindows();
+
+async function renderExamWindowsTable() {
+  let windows = await getExamWindows();
   let tbody = document.getElementById("examWindowsTableBody");
   tbody.innerHTML = "";
 
-  windows.forEach((window, index) => {
+  windows.forEach((window) => {
     let row = document.createElement("tr");
 
-    let data = [window.start, window.end];
+    let data = [window.startDate, window.endDate];
 
     data.forEach((value) => {
       let td = document.createElement("td");
@@ -731,7 +742,7 @@ function renderExamWindowsTable() {
     let actionsTd = document.createElement("td");
     actionsTd.appendChild(
       createButton("Remove", function () {
-        removeExamWindow(index);
+        removeExamWindow(window.id);
       })
     );
     row.appendChild(actionsTd);
@@ -740,17 +751,15 @@ function renderExamWindowsTable() {
   });
 }
 
-function removeExamWindow(index) {
-  let windows = getExamWindows();
-  windows.splice(index, 1);
-  saveExamWindows(windows);
+async function removeExamWindow(id) {
+  await fetch(`${API_BASE}/examWindows/${id}`, { method: "DELETE" });
   renderExamWindowsTable();
 }
 
 function wireExamWindowForm() {
   let form = document.getElementById("examWindowForm");
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     let start = document.getElementById("examStart").value;
@@ -761,26 +770,34 @@ function wireExamWindowForm() {
       return;
     }
 
-    let windows = getExamWindows();
-    windows.push({ start: start, end: end });
-    saveExamWindows(windows);
+    let newWindow = {
+      title: "Exam Window " + start + " to " + end,
+      startDate: start,
+      endDate: end
+    };
+
+    await fetch(`${API_BASE}/examWindows`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newWindow)
+    });
 
     form.reset();
     renderExamWindowsTable();
   });
 }
 
-function getExamProximityScore(role, dateStr) {
+async function getExamProximityScore(role, dateStr) {
   if (role !== "final_year" && role !== "pg") return 0;
 
-  let windows = getExamWindows();
+  let windows = await getExamWindows();
   if (windows.length === 0) return 0;
 
   let checkDate = new Date(dateStr + "T00:00:00");
 
   for (let i = 0; i < windows.length; i++) {
-    let start = new Date(windows[i].start + "T00:00:00");
-    let end = new Date(windows[i].end + "T23:59:59");
+    let start = new Date(windows[i].startDate + "T00:00:00");
+    let end = new Date(windows[i].endDate + "T23:59:59");
 
     if (checkDate >= start && checkDate <= end) {
       let msPerDay = 1000 * 60 * 60 * 24;

@@ -34,18 +34,18 @@
     <script>
         let form = document.getElementById("signupForm");
 
-        let handleSubmit = (event) => {
+        let handleSubmit = async (event) => {
             event.preventDefault();
 
             let fullName = document.getElementById("name");
-            let StudentId = document.getElementById("studentId");
+            let studentId = document.getElementById("studentId");
             let email = document.getElementById("email");
             let password = document.getElementById("password");
             let confirmPassword = document.getElementById("confirmPassword");
 
             if (
                 fullName.value.trim() === "" ||
-                StudentId.value.trim() === "" ||
+                studentId.value.trim() === "" ||
                 email.value.trim() === "" ||
                 password.value.trim() === "" ||
                 confirmPassword.value.trim() === ""
@@ -69,7 +69,8 @@
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem("users")) || [];
+            let response = await fetch("http://localhost:3000/users");
+            let users = await response.json();
 
             let existing = users.find(
                 user => user.email === email.value.trim()
@@ -82,16 +83,26 @@
 
             let newuser = {
                 name: fullName.value.trim(),
-                StudentId: StudentId.value.trim(),
+                studentId: studentId.value.trim(),
                 email: email.value.trim(),
                 password: password.value,
                 role: "student",
-                noShowCount: 0
+                department: "",
+                semester: null,
+                noShowCount: 0,
+                reliabilityScore: 100,
+                suspended: false,
+                suspendedUntil: null,
+                suspendReason: null
             };
 
-            users.push(newuser);
-
-            localStorage.setItem("users", JSON.stringify(users));
+            await fetch("http://localhost:3000/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newuser)
+            });
 
             alert("Account created successfully");
 

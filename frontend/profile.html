@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
 </head>
+
 <body>
     <h1>My Profile</h1>
 
@@ -26,20 +28,46 @@
             alert("Please login first");
             window.location.href = "login.html";
         } else {
-            profileContainer.innerHTML = `
-                <h2>${currentUser.name}</h2>
-                <p>Student ID: ${currentUser.StudentId}</p>
-                <p>Email: ${currentUser.email}</p>
-                <p>Role: ${currentUser.role}</p>
-                <p>No-Show Count: ${currentUser.noShowCount}</p>
-            `;
+            loadProfile();
         }
 
-        logoutBtn.addEventListener("click", () => {
+        async function loadProfile() {
+            try {
+                let response = await fetch(
+                    `http://localhost:3000/users/${currentUser.id}`
+                );
+
+                if (!response.ok) {
+                    alert("Unable to load profile");
+                    return;
+                }
+
+                let user = await response.json();
+
+                profileContainer.innerHTML = `
+                    <h2>${user.name}</h2>
+                    <p>Student ID: ${String(user.studentId)}</p>
+                    <p>Email: ${user.email}</p>
+                    <p>Role: ${user.role}</p>
+                    <p>No-Show Count: ${user.noShowCount || 0}</p>
+                `;
+
+            } catch (error) {
+                console.error("Error loading profile:", error);
+                profileContainer.innerHTML = `
+                    <p>Unable to connect to the server.</p>
+                `;
+            }
+        }
+
+        logoutBtn.addEventListener("click", function () {
             localStorage.removeItem("currentUser");
+
             alert("Logged out successfully");
+
             window.location.href = "login.html";
         });
     </script>
 </body>
+
 </html>

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Stackroom</title>
-<link rel="stylesheet" href="css/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Stackroom</title>
+  <link rel="stylesheet" href="css/admin.css">
 </head>
+
 <body>
 
-<!--
+  <!--
   ADMIN PANEL — Phase 1
   ----------------------------------------------------------------
   Tab-based navigation, same technique as index.html: buttons with
@@ -31,313 +33,315 @@
   ----------------------------------------------------------------
 -->
 
-<div class="admin-shell">
+  <div class="admin-shell">
 
-  <header class="admin-header">
-    <h1>Admin Panel</h1>
-    <a href="index.html" class="link-back">&larr; Back to app</a>
-  </header>
+    <header class="admin-header">
+      <h1>Admin Panel</h1>
+      <a href="index.html" class="link-back">&larr; Back to app</a>
+    </header>
 
-  <nav class="admin-tabs" id="adminTabs">
-    <button class="tab-btn" data-view="dashboard">Dashboard</button>
-    <button class="tab-btn" data-view="reservations">Reservations</button>
-    <button class="tab-btn" data-view="resources">Resources</button>
-    <button class="tab-btn" data-view="users">Users</button>
-    <button class="tab-btn" data-view="settings">Settings</button>
-  </nav>
+    <nav class="admin-tabs" id="adminTabs">
+      <button class="tab-btn" data-view="dashboard">Dashboard</button>
+      <button class="tab-btn" data-view="reservations">Reservations</button>
+      <button class="tab-btn" data-view="resources">Resources</button>
+      <button class="tab-btn" data-view="users">Users</button>
+      <button class="tab-btn" data-view="settings">Settings</button>
+    </nav>
 
-  <!-- ============================================================ -->
-  <!-- [DASHBOARD] — live/ongoing bookings + quick stats             -->
-  <!-- ============================================================ -->
-  <section class="view" id="view-dashboard" hidden>
+    <!-- ============================================================ -->
+    <!-- [DASHBOARD] — live/ongoing bookings + quick stats             -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-dashboard" hidden>
 
-    <section class="admin-section" id="section-stats">
-      <h2>Today at a Glance</h2>
-      <div class="stat-cards">
-        <div class="stat-card">
-          <span class="stat-value" id="statTotalToday">—</span>
-          <span class="stat-label">Reservations today</span>
+      <section class="admin-section" id="section-stats">
+        <h2>Today at a Glance</h2>
+        <div class="stat-cards">
+          <div class="stat-card">
+            <span class="stat-value" id="statTotalToday">—</span>
+            <span class="stat-label">Reservations today</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="statLiveNow">—</span>
+            <span class="stat-label">Happening right now</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="statPending">—</span>
+            <span class="stat-label">Pending</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="statNoShowsToday">—</span>
+            <span class="stat-label">No-shows today</span>
+          </div>
         </div>
-        <div class="stat-card">
-          <span class="stat-value" id="statLiveNow">—</span>
-          <span class="stat-label">Happening right now</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="statPending">—</span>
-          <span class="stat-label">Pending</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="statNoShowsToday">—</span>
-          <span class="stat-label">No-shows today</span>
-        </div>
-      </div>
+      </section>
+
+      <section class="admin-section" id="section-live-bookings">
+        <h2>Live Bookings</h2>
+        <p class="hint">Reservations whose time slot is happening right now.</p>
+        <table class="admin-table" id="liveBookingsTable">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Resource</th>
+              <th>Started</th>
+              <th>Ends</th>
+              <th>Checked in</th>
+            </tr>
+          </thead>
+          <tbody id="liveBookingsTableBody"></tbody>
+        </table>
+        <p class="empty-note" id="liveBookingsEmptyNote" hidden>Nothing is happening right now.</p>
+      </section>
+
     </section>
 
-    <section class="admin-section" id="section-live-bookings">
-      <h2>Live Bookings</h2>
-      <p class="hint">Reservations whose time slot is happening right now.</p>
-      <table class="admin-table" id="liveBookingsTable">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Resource</th>
-            <th>Started</th>
-            <th>Ends</th>
-            <th>Checked in</th>
-          </tr>
-        </thead>
-        <tbody id="liveBookingsTableBody"></tbody>
-      </table>
-      <p class="empty-note" id="liveBookingsEmptyNote" hidden>Nothing is happening right now.</p>
-    </section>
+    <!-- ============================================================ -->
+    <!-- [RESERVATIONS] — full oversight table (already built)         -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-reservations" hidden>
+      <section class="admin-section" id="section-reservations">
+        <h2>Reservation Oversight</h2>
 
-  </section>
-
-  <!-- ============================================================ -->
-  <!-- [RESERVATIONS] — full oversight table (already built)         -->
-  <!-- ============================================================ -->
-  <section class="view" id="view-reservations" hidden>
-    <section class="admin-section" id="section-reservations">
-      <h2>Reservation Oversight</h2>
-
-      <div class="filter-bar">
-        <label>
-          Status
-          <select id="resFilterStatus">
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="bumped">Bumped</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="completed">Completed</option>
-            <option value="no_show">No-show</option>
-          </select>
-        </label>
-        <label>
-          Date
-          <input type="date" id="resFilterDate">
-        </label>
-        <label>
-          User
-          <select id="resFilterUser">
-            <option value="all">All users</option>
-          </select>
-        </label>
-        <label>
-          Resource
-          <select id="resFilterResource">
-            <option value="all">All resources</option>
-          </select>
-        </label>
-        <button type="button" id="resFilterClear">Clear filters</button>
-      </div>
-
-      <table class="admin-table" id="reservationsTable">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Resource</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Checked in</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="reservationsTableBody"></tbody>
-      </table>
-      <p class="empty-note" id="reservationsEmptyNote" hidden>No reservations match this filter.</p>
-    </section>
-  </section>
-
-  <!-- ============================================================ -->
-  <!-- [RESOURCES] — CRUD (in progress)                               -->
-  <!-- ============================================================ -->
-  <section class="view" id="view-resources" hidden>
-    <section class="admin-section" id="section-resources">
-      <h2>Resource Management</h2>
-
-      <form id="resourceForm" class="inline-form">
-        <input type="hidden" id="resourceEditId" value="">
-        <label>
-          Label
-          <input type="text" id="resourceLabel" placeholder="e.g. S-041" required>
-        </label>
-        <label>
-          Type
-          <select id="resourceType">
-            <option value="seat">Seat</option>
-            <option value="discussion_room">Discussion room</option>
-            <option value="projector">Projector</option>
-          </select>
-        </label>
-        <label>
-          Zone
-          <input type="text" id="resourceZone" placeholder="e.g. North Wing" required>
-        </label>
-        <label>
-          Capacity
-          <input type="number" id="resourceCapacity" min="1" value="1" required>
-        </label>
-        <button type="submit" id="resourceSubmitBtn">Add resource</button>
-        <button type="button" id="resourceCancelEditBtn" hidden>Cancel edit</button>
-      </form>
-
-      <table class="admin-table" id="resourcesTable">
-        <thead>
-          <tr>
-            <th>Label</th>
-            <th>Type</th>
-            <th>Zone</th>
-            <th>Capacity</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="resourcesTableBody"></tbody>
-      </table>
-    </section>
-  </section>
-
-  <!-- ============================================================ -->
-  <!-- [USERS] — search, profile drill-down, history, access control -->
-  <!-- ============================================================ -->
-  <section class="view" id="view-users" hidden>
-
-    <section class="admin-section" id="section-user-search">
-      <h2>Find a User</h2>
-      <input type="text" id="userSearchInput" placeholder="Search by name...">
-      <div id="userSearchResults" class="search-results"></div>
-    </section>
-
-    <section class="admin-section" id="section-user-profile" hidden>
-      <h2 id="userProfileName">—</h2>
-
-      <div class="profile-grid">
-        <div class="profile-block">
-          <h3>Overview</h3>
-          <p><strong>Role:</strong> <span id="userProfileRole">—</span></p>
-          <p><strong>No-shows:</strong> <span id="userProfileNoShows">—</span></p>
-          <p><strong>Reliability score:</strong> <span id="userProfileReliability">—</span></p>
+        <div class="filter-bar">
+          <label>
+            Status
+            <select id="resFilterStatus">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="bumped">Bumped</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
+              <option value="no_show">No-show</option>
+            </select>
+          </label>
+          <label>
+            Date
+            <input type="date" id="resFilterDate">
+          </label>
+          <label>
+            User
+            <select id="resFilterUser">
+              <option value="all">All users</option>
+            </select>
+          </label>
+          <label>
+            Resource
+            <select id="resFilterResource">
+              <option value="all">All resources</option>
+            </select>
+          </label>
+          <button type="button" id="resFilterClear">Clear filters</button>
         </div>
 
-        <div class="profile-block">
-          <h3>Priority Breakdown</h3>
-          <p class="hint">Score if this user booked something right now.</p>
-          <ul id="userProfilePriorityBreakdown" class="simple-list"></ul>
+        <table class="admin-table" id="reservationsTable">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Resource</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Checked in</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reservationsTableBody"></tbody>
+        </table>
+        <p class="empty-note" id="reservationsEmptyNote" hidden>No reservations match this filter.</p>
+      </section>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- [RESOURCES] — CRUD (in progress)                               -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-resources" hidden>
+      <section class="admin-section" id="section-resources">
+        <h2>Resource Management</h2>
+
+        <form id="resourceForm" class="inline-form">
+          <input type="hidden" id="resourceEditId" value="">
+          <label>
+            Label
+            <input type="text" id="resourceLabel" placeholder="e.g. S-041" required>
+          </label>
+          <label>
+            Type
+            <select id="resourceType">
+              <option value="seat">Seat</option>
+              <option value="discussion_room">Discussion room</option>
+              <option value="projector">Projector</option>
+            </select>
+          </label>
+          <label>
+            Zone
+            <input type="text" id="resourceZone" placeholder="e.g. North Wing" required>
+          </label>
+          <label>
+            Capacity
+            <input type="number" id="resourceCapacity" min="1" value="1" required>
+          </label>
+          <button type="submit" id="resourceSubmitBtn">Add resource</button>
+          <button type="button" id="resourceCancelEditBtn" hidden>Cancel edit</button>
+        </form>
+
+        <table class="admin-table" id="resourcesTable">
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th>Type</th>
+              <th>Zone</th>
+              <th>Capacity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="resourcesTableBody"></tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- [USERS] — search, profile drill-down, history, access control -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-users" hidden>
+
+      <section class="admin-section" id="section-user-search">
+        <h2>Find a User</h2>
+        <input type="text" id="userSearchInput" placeholder="Search by name...">
+        <div id="userSearchResults" class="search-results"></div>
+      </section>
+
+      <section class="admin-section" id="section-user-profile" hidden>
+        <h2 id="userProfileName">—</h2>
+
+        <div class="profile-grid">
+          <div class="profile-block">
+            <h3>Overview</h3>
+            <p><strong>Role:</strong> <span id="userProfileRole">—</span></p>
+            <p><strong>No-shows:</strong> <span id="userProfileNoShows">—</span></p>
+            <p><strong>Reliability score:</strong> <span id="userProfileReliability">—</span></p>
+          </div>
+
+          <div class="profile-block">
+            <h3>Priority Breakdown</h3>
+            <p class="hint">Score if this user booked something right now.</p>
+            <ul id="userProfilePriorityBreakdown" class="simple-list"></ul>
+          </div>
+
+          <div class="profile-block">
+            <h3>Access Control</h3>
+            <p id="userSuspendStatus" class="hint">Not suspended.</p>
+            <form id="userSuspendForm" class="inline-form">
+              <label>
+                Duration
+                <select id="userSuspendDuration">
+                  <option value="1">1 day</option>
+                  <option value="7">7 days</option>
+                  <option value="30">30 days</option>
+                  <option value="indefinite">Indefinite</option>
+                </select>
+              </label>
+              <label>
+                Reason
+                <input type="text" id="userSuspendReason" placeholder="e.g. repeated no-shows">
+              </label>
+              <button type="submit" id="userSuspendBtn">Suspend user</button>
+            </form>
+            <button type="button" id="userUnsuspendBtn" hidden>Lift suspension</button>
+          </div>
         </div>
 
-        <div class="profile-block">
-          <h3>Access Control</h3>
-          <p id="userSuspendStatus" class="hint">Not suspended.</p>
-          <form id="userSuspendForm" class="inline-form">
-            <label>
-              Duration
-              <select id="userSuspendDuration">
-                <option value="1">1 day</option>
-                <option value="7">7 days</option>
-                <option value="30">30 days</option>
-                <option value="indefinite">Indefinite</option>
-              </select>
-            </label>
-            <label>
-              Reason
-              <input type="text" id="userSuspendReason" placeholder="e.g. repeated no-shows">
-            </label>
-            <button type="submit" id="userSuspendBtn">Suspend user</button>
-          </form>
-          <button type="button" id="userUnsuspendBtn" hidden>Lift suspension</button>
+        <h3>Booking History</h3>
+        <table class="admin-table" id="userHistoryTable">
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="userBookingHistoryTableBody"></tbody>
+        </table>
+        <p class="empty-note" id="userHistoryEmptyNote" hidden>No bookings for this user yet.</p>
+      </section>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- [SETTINGS] — exam windows, manual sweep, export                -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-settings" hidden>
+
+      <section class="admin-section" id="section-exam-windows">
+        <h2>Exam Window Management</h2>
+        <p class="hint">Reservations inside a window get exam-proximity priority boost for final-year/thesis and PG
+          students.</p>
+
+        <form id="examWindowForm" class="inline-form">
+          <label>
+            Start date
+            <input type="date" id="examStart" required>
+          </label>
+          <label>
+            End date
+            <input type="date" id="examEnd" required>
+          </label>
+          <button type="submit">Add window</button>
+        </form>
+
+        <table class="admin-table" id="examWindowsTable">
+          <thead>
+            <tr>
+              <th>Start</th>
+              <th>End</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="examWindowsTableBody"></tbody>
+        </table>
+      </section>
+
+      <section class="admin-section" id="section-sweep">
+        <h2>Manual No-Show Sweep</h2>
+        <p class="hint">
+          Normally this runs automatically whenever a view loads (simulating a cron job).
+          Use this to force it right now — useful for demoing/testing without waiting
+          for real time to pass.
+        </p>
+        <button type="button" id="runSweepBtn">Run sweep now</button>
+        <p id="sweepResult" class="hint"></p>
+      </section>
+
+      <section class="admin-section" id="section-export">
+        <h2>Export Data</h2>
+        <div class="export-buttons">
+          <button type="button" id="exportReservationsCsv">Reservations &rarr; CSV</button>
+          <button type="button" id="exportReservationsJson">Reservations &rarr; JSON</button>
+          <button type="button" id="exportUsersCsv">Users &rarr; CSV</button>
+          <button type="button" id="exportUsersJson">Users &rarr; JSON</button>
+          <button type="button" id="exportResourcesCsv">Resources &rarr; CSV</button>
+          <button type="button" id="exportResourcesJson">Resources &rarr; JSON</button>
         </div>
-      </div>
+      </section>
 
-      <h3>Booking History</h3>
-      <table class="admin-table" id="userHistoryTable">
-        <thead>
-          <tr>
-            <th>Resource</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="userBookingHistoryTableBody"></tbody>
-      </table>
-      <p class="empty-note" id="userHistoryEmptyNote" hidden>No bookings for this user yet.</p>
     </section>
 
-  </section>
+  </div>
 
-  <!-- ============================================================ -->
-  <!-- [SETTINGS] — exam windows, manual sweep, export                -->
-  <!-- ============================================================ -->
-  <section class="view" id="view-settings" hidden>
+  <div id="adminToastContainer" class="toast-container" aria-live="polite"></div>
 
-    <section class="admin-section" id="section-exam-windows">
-      <h2>Exam Window Management</h2>
-      <p class="hint">Reservations inside a window get exam-proximity priority boost for final-year/thesis and PG students.</p>
+  <!-- Nav switching only — plumbing, already written -->
+  <script src="js/adminNav.js"></script>
 
-      <form id="examWindowForm" class="inline-form">
-        <label>
-          Start date
-          <input type="date" id="examStart" required>
-        </label>
-        <label>
-          End date
-          <input type="date" id="examEnd" required>
-        </label>
-        <button type="submit">Add window</button>
-      </form>
-
-      <table class="admin-table" id="examWindowsTable">
-        <thead>
-          <tr>
-            <th>Start</th>
-            <th>End</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="examWindowsTableBody"></tbody>
-      </table>
-    </section>
-
-    <section class="admin-section" id="section-sweep">
-      <h2>Manual No-Show Sweep</h2>
-      <p class="hint">
-        Normally this runs automatically whenever a view loads (simulating a cron job).
-        Use this to force it right now — useful for demoing/testing without waiting
-        for real time to pass.
-      </p>
-      <button type="button" id="runSweepBtn">Run sweep now</button>
-      <p id="sweepResult" class="hint"></p>
-    </section>
-
-    <section class="admin-section" id="section-export">
-      <h2>Export Data</h2>
-      <div class="export-buttons">
-        <button type="button" id="exportReservationsCsv">Reservations &rarr; CSV</button>
-        <button type="button" id="exportReservationsJson">Reservations &rarr; JSON</button>
-        <button type="button" id="exportUsersCsv">Users &rarr; CSV</button>
-        <button type="button" id="exportUsersJson">Users &rarr; JSON</button>
-        <button type="button" id="exportResourcesCsv">Resources &rarr; CSV</button>
-        <button type="button" id="exportResourcesJson">Resources &rarr; JSON</button>
-      </div>
-    </section>
-
-  </section>
-
-</div>
-
-<div id="adminToastContainer" class="toast-container" aria-live="polite"></div>
-
-<!-- Nav switching only — plumbing, already written -->
-<script src="js/adminNav.js"></script>
-
-<!-- Feature scripts — one per page, add each as you build it -->
-<script src="js/adminPanel.js"></script>
-<!-- <script src="js/resourceManagement.js"></script> -->
-<!-- <script src="js/userManagement.js"></script> -->
-<!-- <script src="js/dashboard.js"></script> -->
-<!-- <script src="js/settingsPanel.js"></script> -->
+  <!-- Feature scripts — one per page, add each as you build it -->
+  <script src="js/adminPanel.js"></script>
+  <!-- <script src="js/resourceManagement.js"></script> -->
+  <!-- <script src="js/userManagement.js"></script> -->
+  <!-- <script src="js/dashboard.js"></script> -->
+  <!-- <script src="js/settingsPanel.js"></script> -->
 
 </body>
+
 </html>

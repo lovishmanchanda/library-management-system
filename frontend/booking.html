@@ -91,7 +91,7 @@
                 <select id="resourceType">
                     <option value="all">All Resources</option>
                     <option value="seat">Seats</option>
-                    <option value="discussion-room">Discussion Rooms</option>
+                    <option value="discussion_room">Discussion Rooms</option>
                     <option value="projector">Projectors</option>
                 </select>
 
@@ -146,7 +146,7 @@
 
         getResources();
 
-        let showResources = () => {
+        let showResources = async () => {
             let resourceType = document.getElementById("resourceType").value;
             let zone = document.getElementById("zone").value;
             let date = document.getElementById("date").value;
@@ -156,7 +156,8 @@
 
             resourceMap.innerHTML = "";
 
-            let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+            let res = await fetch("http://localhost:3000/reservations");
+            let reservations = await res.json();
 
             let filteredResources = resources.filter(resource => {
                 return (resourceType === "all" || resource.type === resourceType) &&
@@ -167,11 +168,13 @@
                 let booked = false;
 
                 if (date !== "" && startTime !== "" && endTime !== "") {
-                    booked = bookings.find(booking =>
-                        booking.resourcesid === resource.id &&
-                        booking.date === date &&
-                        booking.startTime < endTime &&
-                        booking.endTime > startTime
+                    booked = reservations.find(reservation =>
+                        String(reservation.resourceId) === String(resource.id) &&
+                        reservation.date === date &&
+                        reservation.startTime < endTime &&
+                        reservation.endTime > startTime &&
+                        reservation.status !== "cancelled" &&
+                        reservation.status !== "no_show"
                     );
                 }
 
@@ -179,7 +182,7 @@
 
                 resourceMap.innerHTML += `
                     <div class="resource-card" onclick="selectResource('${resource.id}')">
-                        <h3>${resource.name}</h3>
+                        <h3>${resource.label || resource.name}</h3>
                         <p>Type: ${resource.type}</p>
                         <p>Zone: ${resource.zone}</p>
                         <p>Capacity: ${resource.capacity}</p>
@@ -196,10 +199,10 @@
         document.getElementById("endTime").addEventListener("change", showResources);
 
         let selectResource = (id) => {
-            selectedResource = resources.find(resource => resource.id === id);
+            selectedResource = resources.find(resource => String(resource.id) === String(id));
 
             selectedResourceDiv.innerHTML = `
-                <h3>${selectedResource.name}</h3>
+                <h3>${selectedResource.label || selectedResource.name}</h3>
                 <p>Type: ${selectedResource.type}</p>
                 <p>Zone: ${selectedResource.zone}</p>
                 <p>Capacity: ${selectedResource.capacity}</p>
@@ -208,7 +211,7 @@
 
         let bookingForm = document.getElementById("bookingForm");
 
-        bookingForm.addEventListener("submit", (event) => {
+        bookingForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             let date = document.getElementById("date").value;
@@ -236,13 +239,16 @@
                 return;
             }
 
-            let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+            let res = await fetch("http://localhost:3000/reservations");
+            let reservations = await res.json();
 
-            let exist = bookings.find(booking =>
-                booking.resourcesid === selectedResource.id &&
-                booking.date === date &&
-                booking.startTime < endTime &&
-                booking.endTime > startTime
+            let exist = reservations.find(reservation =>
+                String(reservation.resourceId) === String(selectedResource.id) &&
+                reservation.date === date &&
+                reservation.startTime < endTime &&
+                reservation.endTime > startTime &&
+                reservation.status !== "cancelled" &&
+                reservation.status !== "no_show"
             );
 
             if (exist) {
@@ -250,19 +256,30 @@
                 return;
             }
 
-            let stud = {
-                userEmail: currentUser.email,
-                userName: currentUser.name,
-                resourcesid: selectedResource.id,
-                resourcesName: selectedResource.name,
+            let newReservation = {
+                userId: currentUser.id,
+                resourceId: selectedResource.id,
                 date: date,
                 startTime: startTime,
-                endTime: endTime
+                endTime: endTime,
+                status: "pending",
+                priorityScore: null,
+                checkedIn: false,
+                createdAt: new Date().toISOString()
             };
 
-            bookings.push(stud);
+            let response = await fetch("http://localhost:3000/reservations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newReservation)
+            });
 
-            localStorage.setItem("bookings", JSON.stringify(bookings));
+            if (!response.ok) {
+                alert("Booking failed");
+                return;
+            }
 
             alert("Resource booked successfully");
 
