@@ -1,290 +1,358 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Atlas Room — Find your corner. Open your next chapter.</title>
-  <meta name="description" content="Reserve a place among the shelves—whether you're reading deeply, meeting quietly, or writing toward tomorrow.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Atlas Room - Login to Your Library</title>
+
+    <meta name="description" content="Log in to Atlas Room to reserve your library seat, explore quiet spaces and continue your reading journey.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/login.css">
 </head>
+
 <body>
 
-  <!-- ==================== HEADER & NAVIGATION ==================== -->
-  <header class="header">
-    <div class="container header__inner">
-      <!-- Brand Logo -->
-      <a href="#" class="brand" aria-label="Atlas Room Home">
-        <svg class="brand__icon" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- 3D folded book / geometric block icon -->
-          <polygon points="14,3 25,9 14,15 3,9" fill="#F1E6D1" opacity="0.95"/>
-          <polygon points="3,9 14,15 14,25 3,19" fill="#944638"/>
-          <polygon points="14,15 25,9 25,19 14,25" fill="#4A261D"/>
-        </svg>
-        <span class="brand__name">ATLAS ROOM</span>
-      </a>
+<div class="site-frame">
 
-      <!-- Center Links -->
-      <nav class="nav__links" id="navLinks" aria-label="Main Navigation">
-        <a href="#spaces" class="nav__link">SPACES</a>
-        <a href="#hours" class="nav__link">HOURS</a>
-        <a href="#program" class="nav__link">PROGRAM</a>
-      </nav>
+    <nav class="navbar">
 
-      <!-- Right Actions -->
-      <div class="header__actions">
-        <a href="login.html" class="nav__auth-link">LOG IN</a>
-        <a href="sign_up.html" class="nav__auth-link">Sign Up</a>
-        <a href="booking.html" class="nav__auth-link">RESERVE A SEAT</a>
-        <!-- <button class="btn btn--outline-dark" id="btnSignUp">SIGN UP</button> -->
-        <!-- <button class="btn btn--pill-cream" id="btnReserveTop">RESERVE A SEAT</button> -->
-      </div>
+        <div class="navbar-cream"></div>
 
-      <!-- Mobile Hamburger Toggle -->
-      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
+        <div class="logo">
+            <div class="logo-book">◫</div>
 
-  <main class="container">
-
-    <!-- ==================== TOP DECORATIVE SHELF WIDGET ==================== -->
-    <section class="shelf-widget" aria-hidden="true">
-      <div class="shelf-widget__top-bar">
-        <div class="shelf-widget__pills">
-          <span class="pill pill--brick"></span>
-          <span class="pill pill--dark"></span>
-          <span class="pill pill--brick"></span>
-        </div>
-        <div class="shelf-widget__lines">
-          <span class="line"></span>
-          <span class="line"></span>
-          <span class="line"></span>
-          <span class="line"></span>
-        </div>
-      </div>
-      <div class="shelf-widget__bottom-bar">
-        <div class="shelf-widget__olive-light"></div>
-        <div class="shelf-widget__olive-dark"></div>
-      </div>
-    </section>
-
-    <!-- ==================== HERO SECTION ==================== -->
-    <section class="hero">
-      <p class="eyebrow">A ROOM FOR EVERY KIND OF STUDY</p>
-      <h1 class="hero__title">Find your corner.<br>Open your next chapter.</h1>
-      <p class="hero__desc">Reserve a place among the shelves—whether you're reading deeply, meeting quietly, or writing toward tomorrow.</p>
-      <div class="hero__cta-row">
-        <button class="btn btn--brick-cta" id="heroCta">
-          FIND A STUDY SPACE <span class="arrow" aria-hidden="true">→</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- ==================== FEATURED LIBRARY SCENE WITH FLOATING CARDS ==================== -->
-    <section class="featured-scene" id="spaces">
-      <div class="featured-scene__wrapper">
-        <!-- Main Artwork / Illustration -->
-        <div class="featured-scene__art">
-          <img src="assets/atlas_library.jpg" alt="Illustrated modern library reading room with readers and lush plants" class="featured-scene__img">
-        </div>
-
-        <!-- Floating Card 1: Top Left (Library Pass) -->
-        <div class="float-card float-card--top-left">
-          <div class="float-card__badge-monogram">
-            <span class="monogram-letter">N</span>
-          </div>
-          <div class="float-card__pass-content">
-            <span class="float-card__tag">LIBRARY PASS</span>
-            <h2 class="float-card__title">Atlas Reading Room</h2>
-            <p class="float-card__text">A provisional place for quiet work and open tables.</p>
-            <div class="float-card__meta">
-              <span class="meta-item">4 seats</span>
-              <span class="meta-item">Open today</span>
+            <div>
+                <h2>ATLAS ROOM</h2>
+                <p>READ. FOCUS. GROW.</p>
             </div>
-          </div>
         </div>
 
-        <!-- Floating Card 2: Top Right (Reading Conditions) -->
-        <div class="float-card float-card--top-right float-card--dark">
-          <span class="float-card__tag float-card__tag--muted">READING CONDITIONS</span>
-          <h2 class="float-card__title float-card__title--large">Quiet</h2>
-          <div class="float-card__pill-highlight">
-            Best for focused study
-          </div>
+        <div class="nav-links">
+            <a href="index.html">SPACES</a>
+            <a href="#">HOURS</a>
+            <a href="#">PROGRAM</a>
         </div>
 
-        <!-- Floating Card 3: Bottom Left (Today's Notes) -->
-        <div class="float-card float-card--bottom-left">
-          <h3 class="float-card__notes-title">Today's notes</h3>
-          <ul class="float-card__notes-list">
-            <li>A placeholder reading list</li>
-            <li>A future event note</li>
-          </ul>
+        <div class="nav-buttons">
+            <a href="login.html" class="login-nav">LOG IN</a>
+
+            <a href="sign_up.html" class="signup-nav">
+                SIGN UP
+            </a>
+
+            <div class="nav-profile">☺</div>
         </div>
 
-        <!-- Floating Card 4: Bottom Right (Floor Plan) -->
-        <div class="float-card float-card--bottom-right">
-          <h3 class="float-card__plan-title">Floor plan</h3>
-          <div class="float-card__plan-preview" aria-hidden="true">
-            <div class="plan-grid-preview">
-              <span class="plan-line-subtle"></span>
-              <span class="plan-line-subtle"></span>
+    </nav>
+
+
+    <main class="page">
+
+        <div class="top-glow"></div>
+
+
+        <!-- Corner buttons -->
+
+        <div class="corner-btn corner-tl">↘</div>
+        <div class="corner-btn corner-tr">➤</div>
+        <div class="corner-btn corner-bl">↗</div>
+        <div class="corner-btn corner-br">◫</div>
+
+
+        <!-- Vertical text -->
+
+        <div class="vertical-label-left">
+
+            <span class="vert-text">
+                YOUR NEXT CHAPTER
+            </span>
+
+            <span class="vert-text">
+                STARTS HERE
+            </span>
+
+        </div>
+
+
+        <!-- Decorative shapes -->
+
+        <img
+            class="deco-back"
+            src="images/decorative-shape-back.png"
+            alt=""
+        >
+
+        <img
+            class="deco-front"
+            src="images/decorative-shape-front.png"
+            alt=""
+        >
+
+
+        <!-- Login card area -->
+
+        <div class="card-area">
+
+            <!-- Layers behind login card -->
+
+            <div class="bg-box bg-box-1"></div>
+
+            <div class="bg-box bg-box-2"></div>
+
+
+            <!-- Login card -->
+
+            <div class="login-card">
+
+                <div class="card-stamp">
+
+                    <span>FOCUS</span>
+
+                    <b>◫</b>
+
+                    <span>LEARN</span>
+
+                </div>
+
+
+                <p class="card-label">
+                    WELCOME BACK
+                </p>
+
+
+                <h1>
+                    Login to<br>
+                    your library
+                </h1>
+
+
+                <p class="card-text">
+                    Login to reserve your library seat,
+                    explore quiet spaces and continue your reading journey.
+                </p>
+
+
+                <form id="loginForm">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-box">
+
+                        <span>✉</span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                        >
+
+                    </div>
+
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-box">
+
+                        <span>🔒</span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                        >
+
+                        <span
+                            class="toggle-eye"
+                            id="togglePassword"
+                        >
+                            👁
+                        </span>
+
+                    </div>
+
+
+                    <button type="submit">
+                        ENTER THE LIBRARY
+                    </button>
+
+                </form>
+
+
+                <p class="signup-text">
+
+                    Don't have an account?
+
+                    <a href="sign_up.html">
+                        Sign Up
+                    </a>
+
+                </p>
+
             </div>
-          </div>
-          <a href="#floorplan" class="float-card__plan-link">
-            View plan <span class="arrow" aria-hidden="true">→</span>
-          </a>
-        </div>
-      </div>
-    </section>
 
-    <!-- ==================== ROOM AVAILABILITY SECTION ==================== -->
-    <section class="availability-section" id="hours">
-      <div class="availability-section__header">
-        <p class="eyebrow">FIND YOUR PLACE</p>
-        <h2 class="section-title">Room availability</h2>
-        <p class="section-desc">Four places to study, meet, present, and research—each ready when you are.</p>
-      </div>
-
-      <div class="rooms-grid">
-        <!-- Room Card 1 -->
-        <article class="room-card">
-          <div class="room-card__media">
-            <img src="assets/room_long_table.jpg" alt="The long-table room with warm bay window and sofa seating" class="room-card__img" loading="lazy">
-          </div>
-          <div class="room-card__body">
-            <span class="room-card__tag">COMMUNITY READING ROOM · NORTH WING</span>
-            <h3 class="room-card__title">The long-table room</h3>
-            <p class="room-card__desc">A sunlit shared room with a long table, lounge seating, and space for discussion or independent work.</p>
-            <button class="btn btn--room-pill" aria-label="View The long-table room">
-              View this room <span class="arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-        </article>
-
-        <!-- Room Card 2 -->
-        <article class="room-card">
-          <div class="room-card__media">
-            <img src="assets/room_quiet_desk.jpg" alt="The quiet desk with panoramic window and long wooden table" class="room-card__img" loading="lazy">
-          </div>
-          <div class="room-card__body">
-            <span class="room-card__tag">SOLO STUDY · QUIET WING</span>
-            <h3 class="room-card__title">The quiet desk</h3>
-            <p class="room-card__desc">A calm desk by the windows for deep reading, focused writing, and uninterrupted work.</p>
-            <button class="btn btn--room-pill" aria-label="View The quiet desk">
-              View this room <span class="arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-        </article>
-
-        <!-- Room Card 3 -->
-        <article class="room-card">
-          <div class="room-card__media">
-            <img src="assets/room_presentation.jpg" alt="The presentation room with timber architecture and media space" class="room-card__img" loading="lazy">
-          </div>
-          <div class="room-card__body">
-            <span class="room-card__tag">PROJECTOR ROOM · MEDIA WING</span>
-            <h3 class="room-card__title">The presentation room</h3>
-            <p class="room-card__desc">A flexible room with a large screen, long table, and space for rehearsals, seminars, or group work.</p>
-            <button class="btn btn--room-pill" aria-label="View The presentation room">
-              View this room <span class="arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-        </article>
-
-        <!-- Room Card 4 -->
-        <article class="room-card">
-          <div class="room-card__media">
-            <img src="assets/room_research.jpg" alt="The research room lined with vintage library bookshelves" class="room-card__img" loading="lazy">
-          </div>
-          <div class="room-card__body">
-            <span class="room-card__tag">RESEARCH ROOM · ARCHIVE LEVEL</span>
-            <h3 class="room-card__title">The research room</h3>
-            <p class="room-card__desc">A quiet reference space with surrounding shelves, generous tables, and room to spread out your sources.</p>
-            <button class="btn btn--room-pill" aria-label="View The research room">
-              View this room <span class="arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- ==================== BEHIND THE DESK / INFO SECTION ==================== -->
-    <section class="behind-the-desk-section" id="program">
-      <div class="behind-the-desk-card">
-        <!-- Left Side: Dark Info Panel -->
-        <div class="desk-panel desk-panel--dark">
-          <span class="desk-panel__eyebrow">BEHIND THE DESK</span>
-          <h2 class="desk-panel__title">A library that<br>studies with you.</h2>
-          <p class="desk-panel__desc">Live availability, quiet rules, and room details—organized so your next study session feels effortless.</p>
         </div>
 
-        <!-- Right Side: Cream Feature List -->
-        <div class="desk-panel desk-panel--cream">
-          <!-- Feature Item 1 -->
-          <div class="feature-item">
-            <div class="feature-item__icon-wrap">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#944638" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-                <path d="M12 2v2"></path>
-                <path d="M12 20v2"></path>
-                <path d="M2 12h2"></path>
-                <path d="M20 12h2"></path>
-              </svg>
-            </div>
-            <div class="feature-item__content">
-              <h3 class="feature-item__title">Live availability</h3>
-              <p class="feature-item__text">No more double bookings or manual room checks.</p>
-            </div>
-          </div>
 
-          <!-- Feature Item 2 -->
-          <div class="feature-item">
-            <div class="feature-item__icon-wrap">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#944638" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 11l3 3L22 4"></path>
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-              </svg>
+        <!-- Right side panel -->
+
+        <div class="side-panel">
+
+            <div class="side-icon">
+                ▤
             </div>
-            <div class="feature-item__content">
-              <h3 class="feature-item__title">Rules with room to breathe</h3>
-              <p class="feature-item__text">Define every limit, buffer, permission, and opening hour once.</p>
+
+            <h3>
+                MORE<br>
+                THAN A<br>
+                LIBRARY
+            </h3>
+
+            <div class="side-line"></div>
+
+            <p>Study</p>
+            <p>Read</p>
+            <p>Connect</p>
+            <p>Grow</p>
+
+            <div class="side-arrow">
+                →
             </div>
-          </div>
+
         </div>
-      </div>
-    </section>
 
-  </main>
 
-  <!-- ==================== SIMPLE MODAL / POPUP FOR INTERACTIVITY ==================== -->
-  <dialog class="modal" id="reserveModal">
-    <div class="modal__content">
-      <button class="modal__close" id="modalClose" aria-label="Close dialog">✕</button>
-      <span class="eyebrow">RESERVATION PASS</span>
-      <h3 class="modal__title">Reserve your table</h3>
-      <p class="modal__text">Choose your preferred study room and time slot at Atlas Reading Room.</p>
-      <form class="modal__form" onsubmit="event.preventDefault(); alert('Reservation confirmed!'); document.getElementById('reserveModal').close();">
-        <label class="modal__label">Select Space
-          <select class="modal__select">
-            <option>The long-table room (North Wing)</option>
-            <option>The quiet desk (Quiet Wing)</option>
-            <option>The presentation room (Media Wing)</option>
-            <option>The research room (Archive Level)</option>
-          </select>
-        </label>
-        <button type="submit" class="btn btn--brick-cta modal__submit">CONFIRM SEAT →</button>
-      </form>
-    </div>
-  </dialog>
+        <!-- Quiet spaces -->
 
-  <script src="js/script.js"></script>
+        <div class="quiet-card">
+
+            <div class="pin">
+                📍
+            </div>
+
+            <div>
+
+                <b>QUIET SPACES.</b>
+                <b>BIG IDEAS.</b>
+                <b>BETTER YOU.</b>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    let form = document.getElementById("loginForm");
+
+    let handleSubmit = (event) => {
+
+        event.preventDefault();
+
+        let email = document.getElementById("email");
+        let password = document.getElementById("password");
+
+
+        if (
+            email.value.trim() === "" ||
+            password.value.trim() === ""
+        ) {
+
+            alert("Please Fill all the Details");
+
+            return;
+
+        }
+
+
+        let all_users =
+            JSON.parse(localStorage.getItem("users")) || [];
+
+
+        let exist = all_users.find(user =>
+            user.email === email.value.trim() &&
+            user.password === password.value.trim()
+        );
+
+
+        if (!exist) {
+
+            alert("Invalid Email or Password");
+
+            return;
+
+        }
+
+
+        let currentUser = {
+            ...exist
+        };
+
+        delete currentUser.password;
+
+
+        localStorage.setItem(
+            "currentUser",
+            JSON.stringify(currentUser)
+        );
+
+
+        alert("Login successful");
+
+
+        window.location.href = "index.html";
+
+    };
+
+
+    form.addEventListener(
+        "submit",
+        handleSubmit
+    );
+
+
+    let toggleBtn =
+        document.getElementById("togglePassword");
+
+    let passwordInput =
+        document.getElementById("password");
+
+
+    toggleBtn.addEventListener(
+        "click",
+        () => {
+
+            if (passwordInput.type === "password") {
+
+                passwordInput.type = "text";
+
+                toggleBtn.textContent = "🙈";
+
+            } else {
+
+                passwordInput.type = "password";
+
+                toggleBtn.textContent = "👁";
+
+            }
+
+        }
+    );
+
+</script>
+
 </body>
 </html>
