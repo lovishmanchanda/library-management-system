@@ -3,99 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Atlas Room - Login to Your Library</title>
+    <meta name="description" content="Log in to Atlas Room to reserve your library seat, explore quiet spaces and continue your reading journey.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 
 <body>
 
-    <h1>Welcome Back</h1>
-    <p>Login to reserve your library seat</p>
+  <div class="site-frame">
 
-    <form id="loginForm">
+    <nav class="navbar">
 
-        <label for="email">Email Address</label>
-        <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-        >
+        <div class="logo">
+            <div class="logo-book">◫</div>
+            <div>
+                <h2>ATLAS ROOM</h2>
+                <p>READ. FOCUS. GROW.</p>
+            </div>
+        </div>
 
-        <br><br>
+        <div class="nav-links">
+            <a href="index.html">SPACES</a>
+            <a href="#">HOURS</a>
+            <a href="#">PROGRAM</a>
+        </div>
 
-        <label for="password">Password</label>
-        <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-        >
+        <div class="nav-buttons">
+            <a href="login.html" class="login-nav">LOG IN</a>
+            <a href="sign_up.html" class="signup-nav">SIGN UP</a>
+            <div class="nav-profile">☺</div>
+        </div>
 
-        <br><br>
+    </nav>
 
-        <button type="submit">Login</button>
 
-    </form>
+    <!-- Corner decoration buttons -->
+    <div class="corner-btn corner-tl">↘</div>
+    <div class="corner-btn corner-tr">➤</div>
+    <div class="corner-btn corner-bl">↗</div>
+    <div class="corner-btn corner-br">◫</div>
 
-    <p>
-        Don't have an account?
-        <a href="sign_up.html">Sign Up</a>
-    </p>
+    <main class="page">
+
+        <div class="top-glow"></div>
+
+        <!-- Left vertical text labels -->
+        <div class="vertical-label-left">
+            <span class="vert-text">YOUR NEXT CHAPTER</span>
+            <span class="vert-text">STARTS HERE</span>
+        </div>
+
+        <!-- Decorative PNG shapes: absolute in .page so bottom=0 aligns
+             to the page's own bottom, revealing the red/rust portion -->
+        <img class="deco-back" src="images/decorative-shape-back.png" alt="">
+        <img class="deco-front" src="images/decorative-shape-front.png" alt="">
+
+        <div class="card-area">
+
+            <!-- CSS stacked bg boxes: left (2) and right (1), different sizes/colors -->
+            <div class="bg-box bg-box-1"></div>
+            <div class="bg-box bg-box-2"></div>
+            <div class="bg-box bg-box-3"></div>
+
+            <!-- Main login card -->
+            <div class="login-card">
+
+                <div class="card-stamp">
+                    <span>FOCUS</span>
+                    <b>◫</b>
+                    <span>LEARN</span>
+                </div>
+
+                <p class="card-label">WELCOME BACK</p>
+
+                <h1>Login to<br>your library</h1>
+
+                <p class="card-text">
+                    Login to reserve your library seat,
+                    explore quiet spaces and continue your reading journey.
+                </p>
+
+                <form id="loginForm">
+
+                    <label for="email">Email Address</label>
+
+                    <div class="input-box">
+                        <span>✉</span>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                        >
+                    </div>
+
+                    <label for="password">Password</label>
+
+                    <div class="input-box">
+                        <span>🔒</span>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                        >
+                        <span class="toggle-eye" id="togglePassword">👁</span>
+                    </div>
+
+                    <button type="submit">ENTER THE LIBRARY</button>
+
+                </form>
+
+                <p class="signup-text">
+                    Don't have an account?
+                    <a href="sign_up.html">Sign Up</a>
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Floating side panel (right side, absolute) -->
+        <div class="side-panel">
+
+            <div class="side-icon">▤</div>
+
+            <h3>MORE<br>THAN A<br>LIBRARY</h3>
+
+            <div class="side-line"></div>
+
+            <p>Study</p>
+            <p>Read</p>
+            <p>Connect</p>
+            <p>Grow</p>
+
+            <div class="side-arrow">→</div>
+
+        </div>
+
+        <!-- Quiet spaces card (bottom-right, absolute) -->
+        <div class="quiet-card">
+            <div class="pin">📍</div>
+            <div>
+                <b>QUIET SPACES.</b>
+                <b>BIG IDEAS.</b>
+                <b>BETTER YOU.</b>
+            </div>
+        </div>
+
+    </main>
+
+  </div>
 
 
     <script>
+    let form = document.getElementById("loginForm");
 
-        let form = document.getElementById("loginForm");
+    let handleSubmit = async (event) => {
+        event.preventDefault();
 
-        let handleSubmit = async (event) => {
+        let email = document.getElementById("email");
+        let password = document.getElementById("password");
 
-            event.preventDefault();
+        if (
+            email.value.trim() === "" ||
+            password.value.trim() === ""
+        ) {
+            alert("Please Fill all the Details");
+            return;
+        }
 
-            let email = document.getElementById("email");
-            let password = document.getElementById("password");
+        let response = await fetch("http://localhost:3000/users");
+        let all_users = await response.json();
 
-            // Check empty fields
-            if (
-                email.value.trim() === "" ||
-                password.value.trim() === ""
-            ) {
-                alert("Please Fill all the Details");
-                return;
-            }
+        let exist = all_users.find(user =>
+            user.email === email.value.trim() &&
+            user.password === password.value.trim()
+        );
 
-            let response = await fetch("http://localhost:3000/users");
-            let all_users = await response.json();
+        if (!exist) {
+            alert("Invalid Email or Password");
+            return;
+        }
 
-            // Find user
-            let exist = all_users.find(user =>
-                user.email === email.value.trim() &&
-                user.password === password.value.trim()
-            );
+        delete exist.password;
 
-            // User not found
-            if (!exist) {
-                alert("Invalid Email or Password");
-                return;
-            }
+        localStorage.setItem(
+            "currentUser",
+            JSON.stringify(exist)
+        );
 
-            // Remove password before saving
-            delete exist.password;
+        alert("Login successful");
 
-            // Save logged-in user
-            localStorage.setItem(
-                "currentUser",
-                JSON.stringify(exist)
-            );
+        window.location.href = "index.html";
+    };
 
-            alert("Login successful");
+    form.addEventListener("submit", handleSubmit);
 
-            // Go to home page
-            window.location.href = "index.html";
+    let toggleBtn = document.getElementById("togglePassword");
+    let passwordInput = document.getElementById("password");
 
-        };
-
-
-        form.addEventListener("submit", handleSubmit);
-
-    </script>
+    toggleBtn.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleBtn.textContent = "🙈";
+        } else {
+            passwordInput.type = "password";
+            toggleBtn.textContent = "👁";
+        }
+    });
+</script>
 
 </body>
 </html>
