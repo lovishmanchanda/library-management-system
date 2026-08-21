@@ -3,113 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Atlas Room - Sign Up</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/sign_up.css">
 </head>
+
 <body>
-    <h1>Create Your Account</h1>
-    <p>Get started by creating your account</p>
-    <form id="signupForm">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" placeholder="Enter your full name">
-        <br><br>
-        <label for="studentId">Student ID</label>
-        <input type="text" id="studentId" placeholder="Enter your student ID">
-        <br><br>
-        <label for="email">Email Address</label>
-        <input type="email" id="email" placeholder="Enter your email">
-        <br><br>
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Create a password">
-        <br><br>
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" placeholder="Confirm your password">
-        <br><br>
-        <button type="submit">Sign Up</button>
-    </form>
-    <p>
-        Already have an account?
-        <a href="login.html">Login</a>
-    </p>
 
-    <script>
-        let form = document.getElementById("signupForm");
+<div class="site-frame">
 
-        let handleSubmit = async (event) => {
-            event.preventDefault();
+    <nav class="navbar">
 
-            let fullName = document.getElementById("name");
-            let studentId = document.getElementById("studentId");
-            let email = document.getElementById("email");
-            let password = document.getElementById("password");
-            let confirmPassword = document.getElementById("confirmPassword");
+        <div class="logo">
+            <div class="logo-book">◫</div>
 
-            if (
-                fullName.value.trim() === "" ||
-                studentId.value.trim() === "" ||
-                email.value.trim() === "" ||
-                password.value.trim() === "" ||
-                confirmPassword.value.trim() === ""
-            ) {
-                alert("Please Fill all the Details");
-                return;
-            }
+            <div>
+                <h2>ATLAS ROOM</h2>
+                <p>READ. FOCUS. GROW.</p>
+            </div>
+        </div>
 
-            if (!email.value.includes("@")) {
-                alert("Invalid Email");
-                return;
-            }
+        <div class="nav-links">
+            <a href="index.html">SPACES</a>
+            <a href="#">HOURS</a>
+            <a href="#">PROGRAM</a>
+        </div>
 
-            if (password.value.length < 8) {
-                alert("Password must be at least 8 characters");
-                return;
-            }
+        <div class="nav-buttons">
+            <a href="login.html" class="login-nav">LOG IN</a>
+            <a href="sign_up.html" class="signup-nav">SIGN UP</a>
+            <div class="nav-profile">☺</div>
+        </div>
 
-            if (confirmPassword.value !== password.value) {
-                alert("Passwords do not match");
-                return;
-            }
+    </nav>
 
-            let response = await fetch("http://localhost:3000/users");
-            let users = await response.json();
 
-            let existing = users.find(
-                user => user.email === email.value.trim()
-            );
+    <div class="corner-btn corner-tl">↘</div>
+    <div class="corner-btn corner-tr">➤</div>
+    <div class="corner-btn corner-bl">↗</div>
+    <div class="corner-btn corner-br">◫</div>
 
-            if (existing) {
-                alert("Email already registered");
-                return;
-            }
 
-            let newuser = {
-                name: fullName.value.trim(),
-                studentId: studentId.value.trim(),
-                email: email.value.trim(),
-                password: password.value,
-                role: "student",
-                department: "",
-                semester: null,
-                noShowCount: 0,
-                reliabilityScore: 100,
-                suspended: false,
-                suspendedUntil: null,
-                suspendReason: null
-            };
+    <main class="page">
+        
+        <div class="top-glow"></div>
 
-            await fetch("http://localhost:3000/users", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newuser)
-            });
+         <img src="images/decorative-shape-back-mirrored.png" class="deco-back">
+        <img src="images/decorative-shape-front-mirrored.png" class="deco-front">
+        <div class="vertical-label-left">
+            <span class="vert-text">YOUR NEXT CHAPTER <br> STARTS HERE</span>
+            
+            
+        </div>
 
-            alert("Account created successfully");
+       
+        <div class="card-area">
 
-            window.location.href = "login.html";
-        };
+            <!-- <div class="bg-box bg-box-1"></div>
+            <div class="bg-box bg-box-2"></div>
+            <div class="bg-box bg-box-3"></div> -->
 
-        form.addEventListener("submit", handleSubmit);
-    </script>
+
+            <div class="signup-card">
+
+                <div class="card-stamp">
+                    <span>JOIN</span>
+                    <b>◫</b>
+                    <span>TODAY</span>
+                </div>
+
+
+                <p class="card-label">CREATE ACCOUNT</p>
+
+                <h1>Join the Atlas Room</h1>
+
+                <!-- <p class="card-text">
+                    Create your account to book study spaces.
+                </p> -->
+
+
+                <form id="signupForm">
+
+                    <label for="name">Full Name</label>
+
+                    <div class="input-box">
+                        <span>♙</span>
+
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="Enter your full name"
+                        >
+                    </div>
+
+
+                    <label for="studentId">Student ID</label>
+
+                    <div class="input-box">
+                        <span>▤</span>
+
+                        <input
+                            type="text"
+                            id="studentId"
+                            placeholder="Enter your student ID"
+                        >
+                    </div>
+
+
+                    <label for="email">Email Address</label>
+
+                    <div class="input-box">
+                        <span>✉</span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                        >
+                    </div>
+
+
+                    <label for="password">Password</label>
+
+                    <div class="input-box">
+
+                        <span>🔒</span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Create a password"
+                        >
+
+                        <span
+                            class="toggle-eye"
+                            onclick="togglePassword('password', this)"
+                        >◉</span>
+
+                    </div>
+
+
+                    <label for="confirmPassword">Confirm Password</label>
+
+                    <div class="input-box">
+
+                        <span>🔒</span>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Confirm your password"
+                        >
+
+                        <span
+                            class="toggle-eye"
+                            onclick="togglePassword('confirmPassword', this)"
+                        >◉</span>
+
+                    </div>
+
+
+                    <button type="submit">
+                        CREATE ACCOUNT
+                    </button>
+
+                </form>
+
+
+                <p class="login-text">
+                    Already have an account?
+                    <a href="login.html">Log In</a>
+                </p>
+
+            </div>
+
+
+            <div class="character">
+
+                <img
+                    src="images/signup-character.png"
+                    alt="Student reaching for a book"
+                >
+
+            </div>
+
+
+            <div class="side-panel">
+
+                <div class="side-icon">▤</div>
+
+                <h3>
+                    MORE<br>
+                    THAN A<br>
+                    LIBRARY
+                </h3>
+
+                <div class="side-line"></div>
+
+                <p>Study</p>
+                <p>Read</p>
+                <p>Connect</p>
+                <p>Grow</p>
+
+                <div class="side-arrow">→</div>
+
+            </div>
+
+
+            <div class="quiet-card">
+
+                <div class="pin">●</div>
+
+                <div>
+                    <b>QUIET SPACES.</b>
+                    <b>BIG IDEAS.</b>
+                    <b>BETTER YOU.</b>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+function togglePassword(id, element) {
+
+    let input = document.getElementById(id);
+
+    if (input.type === "password") {
+        input.type = "text";
+        element.textContent = "◎";
+    } else {
+        input.type = "password";
+        element.textContent = "◉";
+    }
+
+}
+
+
+let form = document.getElementById("signupForm");
+
+let handleSubmit = async (event) => {
+
+    event.preventDefault();
+
+    let fullName = document.getElementById("name");
+    let studentId = document.getElementById("studentId");
+    let email = document.getElementById("email");
+    let password = document.getElementById("password");
+    let confirmPassword = document.getElementById("confirmPassword");
+
+
+    if (
+        fullName.value.trim() === "" ||
+        studentId.value.trim() === "" ||
+        email.value.trim() === "" ||
+        password.value.trim() === "" ||
+        confirmPassword.value.trim() === ""
+    ) {
+
+        alert("Please Fill all the Details");
+        return;
+
+    }
+
+
+    if (!email.value.includes("@")) {
+
+        alert("Invalid Email");
+        return;
+
+    }
+
+
+    if (password.value.length < 8) {
+
+        alert("Password must be at least 8 characters");
+        return;
+
+    }
+
+
+    if (confirmPassword.value !== password.value) {
+
+        alert("Passwords do not match");
+        return;
+
+    }
+
+
+    let response = await fetch("http://localhost:3000/users");
+
+    let users = await response.json();
+
+
+    let existing = users.find(
+        user => user.email === email.value.trim()
+    );
+
+
+    if (existing) {
+
+        alert("Email already registered");
+        return;
+
+    }
+
+
+    let newuser = {
+
+        name: fullName.value.trim(),
+
+        studentId: studentId.value.trim(),
+
+        email: email.value.trim(),
+
+        password: password.value,
+
+        role: "student",
+
+        department: "",
+
+        semester: null,
+
+        noShowCount: 0,
+
+        reliabilityScore: 100,
+
+        suspended: false,
+
+        suspendedUntil: null,
+
+        suspendReason: null
+
+    };
+
+
+    await fetch("http://localhost:3000/users", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(newuser)
+
+    });
+
+
+    alert("Account created successfully");
+
+    window.location.href = "login.html";
+
+};
+
+
+form.addEventListener("submit", handleSubmit);
+
+</script>
+
 </body>
 </html>
