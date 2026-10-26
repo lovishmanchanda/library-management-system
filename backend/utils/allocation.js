@@ -25,10 +25,10 @@ const getSeatsUsed = async (resourceId, date, startTime, endTime, ignoreId) => {
     return used
 }
 
-// allocateReservation => confirm the booking if the WHOLE group fits, otherwise mark it unallocated.
+// allocateNow => confirm the booking if the WHOLE group fits, otherwise mark it unallocated.
 // It never changes any other booking, so a confirmed booking is never taken away.
 // Phase 4: in a room with a seat map a confirmed booking also gets its seats (the wished seats if they are free).
-const allocateReservation = async (reservation, resource) => {
+const allocateNow = async (reservation, resource) => {
     const groupSize = reservation.groupSize || 1
     const used = await getSeatsUsed(resource._id, reservation.date, reservation.startTime, reservation.endTime, reservation._id)
 
@@ -78,6 +78,20 @@ const allocateReservation = async (reservation, resource) => {
         }
     }
     return reservation
+}
+
+// waiting => for every resource the allocation that was started last (a promise).
+// The next allocation of the same resource starts when that one is finished, so two requests that arrive at the
+// same moment never count the free seats at the same time. (The app runs as one server process, so this is enough.)
+const waiting = {}
+
+// allocateReservation => the same as allocateNow, but one request at a time for each resource
+const allocateReservation = async (reservation, resource) => {
+    const key = String(resource._id)
+    const before = waiting[key] || Promise.resolve()
+    const mine = before.then(() => allocateNow(reservation, resource))
+    waiting[key] = mine.catch(() => {}) // a failed allocation must not stop the next one
+    return mine
 }
 
 // findBusyPerson => the id of the first person of the booking (requester or group member) who already
