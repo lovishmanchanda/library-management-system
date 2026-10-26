@@ -41,7 +41,9 @@ const reservationAnswer = async (reservation, queuePosition) => {
             }
             : null,
         waitlistedAt: reservation.waitlistedAt,
-        queuePosition: queuePosition || null
+        queuePosition: queuePosition || null,
+        preferredSeats: reservation.preferredSeats || [],
+        seats: reservation.status === "confirmed" ? reservation.seats || [] : []
     }
 }
 
@@ -125,13 +127,17 @@ const acceptOffer = async (req, res) => {
             return res.status(409).send({message: "The alternative filled up before you accepted. Your request is still unallocated", data: await reservationAnswer(reservation)})
         }
 
-        // confirm on the new resource and remember the first choice
+        // confirm on the new resource and remember the first choice.
+        // The wished seats belong to the first room, so the wish is dropped. The new room gives its own seats
         const firstChoice = reservation.resource
+        const oldWish = reservation.preferredSeats
         reservation.resource = alternative._id
+        reservation.preferredSeats = []
         await allocateReservation(reservation, alternative)
         if (reservation.status !== "confirmed") {
-            // somebody took the last seats at the same moment, so go back to the first resource
+            // somebody took the last seats at the same moment, so go back to the first resource and the old wish
             reservation.resource = firstChoice
+            reservation.preferredSeats = oldWish
             reservation.status = "unallocated"
             reservation.offer.status = "expired"
             reservation.reason = addToReason(baseReason, "The alternative filled up before you accepted.")
