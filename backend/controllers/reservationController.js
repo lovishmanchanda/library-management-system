@@ -5,6 +5,7 @@ const {User} = require("../models/userModel")
 const {ExamWindow} = require("../models/examWindowModel")
 const {AllocationRun} = require("../models/allocationRunModel")
 const {allocateReservation} = require("../utils/allocation")
+const {hasSeatMap} = require("../utils/seats")
 const {createOffer, expireOfferIfNeeded} = require("../utils/alternatives")
 const {getQueuePosition, reconsiderWaitlist} = require("../utils/waitlist")
 const {getToday, hasStarted, isSlotAligned} = require("../utils/timeCheck")
@@ -54,6 +55,8 @@ const reservationData = (reservation, myId, queuePosition) => {
             : null,
         waitlistedAt: reservation.waitlistedAt,
         queuePosition: queuePosition || null,
+        preferredSeats: reservation.preferredSeats || [],
+        seats: reservation.status === "confirmed" ? reservation.seats || [] : [], // only a confirmed booking has seats
         members: (reservation.members || []).filter(member => member && member.name).map(member => {
             return {name: member.name, email: member.email}
         })
@@ -64,6 +67,39 @@ const reservationData = (reservation, myId, queuePosition) => {
         data.requester = user && user.name ? {name: user.name} : null
     }
     return data
+}
+
+// checkPreferredSeats => checks the seats a student wishes for (Phase 4). The wish is optional.
+// It gives back {seats} with the clean list, or {error} with a text. An empty wish is fine: the library chooses.
+const checkPreferredSeats = (wish, resource, groupSize) => {
+    if (wish === undefined || wish === null) {
+        return {seats: []}
+    }
+    if (!Array.isArray(wish)) {
+        return {error: "preferredSeats must be a list of seat names like [\"A1\", \"A2\"]"}
+    }
+    if (wish.length === 0) {
+        return {seats: []}
+    }
+    if (!hasSeatMap(resource)) {
+        return {error: "This room has no seat map, so you cannot choose seats"}
+    }
+    const seats = []
+    for (const item of wish) {
+        const label = String(item).trim().toUpperCase()
+        if (seats.includes(label)) {
+            return {error: "The seat " + label + " is listed twice"}
+        }
+        const exists = resource.layout.seats.find(seat => seat.label === label)
+        if (!exists) {
+            return {error: "The seat " + label + " does not exist in this room"}
+        }
+        seats.push(label)
+    }
+    if (seats.length !== groupSize) {
+        return {error: "Choose exactly " + groupSize + " seat(s) for this group, or none and let the library choose"}
+    }
+    return {seats}
 }
 
 // createReservation => a student asks for a resource. The server decides everything.
@@ -163,6 +199,12 @@ const createReservation = async (req, res) => {
             return res.status(400).send({message: "Group is bigger than this resource's capacity"})
         }
 
+        // Phase 4: the seats the student wishes for (only a wish, nothing is held)
+        const wish = checkPreferredSeats(req.body.preferredSeats, resource, groupSize)
+        if (wish.error) {
+            return res.status(400).send({message: wish.error})
+        }
+
         // 5. nobody in the group may have another pending or confirmed booking at that time
         const people = [{id: user._id, email: user.email, isRequester: true}]
         for (const member of members) {
@@ -196,6 +238,7 @@ const createReservation = async (req, res) => {
             eventDate: purpose === "general_study" ? undefined : eventDate,
             members: members.map(member => member._id),
             groupSize,
+            preferredSeats: wish.seats,
             status: "pending",
             reason: "Waiting for the allocation run for " + date,
             priorityScore
