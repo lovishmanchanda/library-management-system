@@ -177,6 +177,16 @@
                 if (booking.originalResource) {
                     movedNote = `<p><strong>Moved from ${escapeHtml(booking.originalResource.label)} (you accepted the offer).</strong></p>`;
                 }
+                // Phase 4: the seats. A confirmed booking has its seats, the wish is shown while the request waits
+                let seatNote = "";
+                if (booking.status === "confirmed" && booking.seats && booking.seats.length > 0) {
+                    seatNote = `<p><strong>Your seats: ${escapeHtml(booking.seats.join(", "))}</strong></p>`;
+                    if (booking.preferredSeats && booking.preferredSeats.length > 0 && booking.preferredSeats.join() !== booking.seats.join()) {
+                        seatNote += `<p>You asked for ${escapeHtml(booking.preferredSeats.join(", "))}. Some of these seats were taken, so you got the nearest free seats.</p>`;
+                    }
+                } else if (booking.preferredSeats && booking.preferredSeats.length > 0 && ["pending", "unallocated", "waitlisted"].includes(booking.status)) {
+                    seatNote = `<p>Seats you asked for: ${escapeHtml(booking.preferredSeats.join(", "))} (only a wish until the request is allocated)</p>`;
+                }
                 let memberNote = "";
                 if (booking.isRequester === false) {
                     let who = booking.requester ? booking.requester.name : "another student";
@@ -215,6 +225,7 @@
                         ${statusHelp(booking, timeStatus) ? `<p>${statusHelp(booking, timeStatus)}</p>` : ""}
                         ${booking.reason ? `<p>Reason: ${escapeHtml(booking.reason)}</p>` : ""}
                         ${memberNote}
+                        ${seatNote}
                         ${queueNote}
                         ${movedNote}
                         ${offerBox}
