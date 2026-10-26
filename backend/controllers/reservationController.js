@@ -86,7 +86,10 @@ const checkPreferredSeats = (wish, resource, groupSize) => {
     }
     const seats = []
     for (const item of wish) {
-        const label = String(item).trim().toUpperCase()
+        if (typeof item !== "string") {
+            return {error: "Every seat must be written as text, like \"A1\""}
+        }
+        const label = item.trim().toUpperCase()
         if (seats.includes(label)) {
             return {error: "The seat " + label + " is listed twice"}
         }
