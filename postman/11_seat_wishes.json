@@ -1,0 +1,1570 @@
+{
+  "info": {
+    "name": "Atlas Room - 11 Seat Wishes",
+    "description": "Phase 4. Needs the seat wishes in the reservation routes (Jasandeep), the seat assignment (Lovish) and the seat map in the resource routes (Krishna) merged. It uses a random far date, so it can be run again and again. It cleans up after itself, but the run history keeps one allocation run record.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "token2",
+      "value": ""
+    },
+    {
+      "key": "token3",
+      "value": ""
+    },
+    {
+      "key": "token4",
+      "value": ""
+    },
+    {
+      "key": "token5",
+      "value": ""
+    },
+    {
+      "key": "date",
+      "value": ""
+    },
+    {
+      "key": "roomId",
+      "value": ""
+    },
+    {
+      "key": "plainId",
+      "value": ""
+    },
+    {
+      "key": "aarav1",
+      "value": ""
+    },
+    {
+      "key": "priya1",
+      "value": ""
+    },
+    {
+      "key": "rohan1",
+      "value": ""
+    },
+    {
+      "key": "karan1",
+      "value": ""
+    },
+    {
+      "key": "seatAarav",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Setup",
+      "item": [
+        {
+          "name": "Login admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@university.edu\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('adminToken', data.token);",
+                  "// a new far away date for every run, so the allocation run of an old date cannot disturb it",
+                  "const month = 1 + Math.floor(Math.random() * 12);",
+                  "const day = 1 + Math.floor(Math.random() * 28);",
+                  "pm.collectionVariables.set('date', '2029-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login student 1 (Aarav)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aarav.sharma@university.edu\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login student 2 (Priya)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"priya.nair@university.edu\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token2', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login student 3 (Rohan)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rohan.verma@university.edu\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token3', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login student 4 (Neha)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"neha.joshi@university.edu\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token4', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login student 5 (Karan)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"karan.malhotra@university.edu\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token5', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create a room with a seat map (8 seats)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/resources",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "resources"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Postman Wish Room\",\n  \"type\": \"study room\",\n  \"zone\": \"Postman Wish Zone\",\n  \"layout\": {\n    \"rows\": 2,\n    \"cols\": 5,\n    \"cells\": [\n      {\n        \"row\": 0,\n        \"col\": 0\n      },\n      {\n        \"row\": 0,\n        \"col\": 1\n      },\n      {\n        \"row\": 0,\n        \"col\": 3\n      },\n      {\n        \"row\": 0,\n        \"col\": 4\n      },\n      {\n        \"row\": 1,\n        \"col\": 0\n      },\n      {\n        \"row\": 1,\n        \"col\": 1\n      },\n      {\n        \"row\": 1,\n        \"col\": 3\n      },\n      {\n        \"row\": 1,\n        \"col\": 4\n      }\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('roomId', data.data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create a room without a seat map",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/resources",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "resources"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Postman Plain Wish Room\",\n  \"type\": \"study room\",\n  \"zone\": \"Postman Wish Zone\",\n  \"capacity\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('plainId', data.data.id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wrong wishes",
+      "item": [
+        {
+          "name": "A wish that is not a list (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": \"A1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A seat that does not exist (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"Z9\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test('The message names the seat', function () { pm.expect(pm.response.json().message).to.include('Z9'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "The same seat twice (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"A1\",\n    \"A1\"\n  ],\n  \"memberEmails\": [\n    \"rohan.verma@university.edu\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Two seats for one person (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"A1\",\n    \"A2\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "One seat for a group of two (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"A1\"\n  ],\n  \"memberEmails\": [\n    \"rohan.verma@university.edu\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A wish for a room without a seat map (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{plainId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"A1\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wishes and the allocation",
+      "item": [
+        {
+          "name": "Aarav wishes for seat A1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"a1 \"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('aarav1', data.data.id);",
+                  "pm.test('Pending, the wish is cleaned to A1 and there are no seats yet', function () {",
+                  "  pm.expect(data.data.status).to.eql('pending');",
+                  "  pm.expect(data.data.preferredSeats).to.eql(['A1']);",
+                  "  pm.expect(data.data.seats).to.eql([]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Priya wishes for the same seat A1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"A1\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('priya1', data.data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rohan wishes for B1 and B2 with Neha",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"B1\",\n    \"B2\"\n  ],\n  \"memberEmails\": [\n    \"neha.joshi@university.edu\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token3}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('rohan1', data.data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Aarav's bookings show the wish and no seats while pending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "mine"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const row = pm.response.json().data.find(function (r) { return r.id === pm.collectionVariables.get('aarav1'); });",
+                  "pm.test('Wish A1, no seats', function () { pm.expect(row.preferredSeats).to.eql(['A1']); pm.expect(row.seats).to.eql([]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin runs the allocation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/allocate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "allocate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"{{date}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test('All three requests are confirmed', function () { pm.expect(pm.response.json().data.run.confirmed).to.eql(3); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Seats after the allocation",
+      "item": [
+        {
+          "name": "Aarav's bookings show a seat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "mine"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const row = pm.response.json().data.find(function (r) { return r.id === pm.collectionVariables.get('aarav1'); });",
+                  "pm.test('Confirmed with one seat', function () { pm.expect(row.status).to.eql('confirmed'); pm.expect(row.seats.length).to.eql(1); });",
+                  "pm.collectionVariables.set('seatAarav', row.seats[0]);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Priya's bookings show a seat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "mine"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const row = pm.response.json().data.find(function (r) { return r.id === pm.collectionVariables.get('priya1'); });",
+                  "pm.test('Confirmed with one seat', function () { pm.expect(row.status).to.eql('confirmed'); pm.expect(row.seats.length).to.eql(1); });",
+                  "pm.test('Two people wished A1: exactly one of them got it, the other got a different seat', function () {",
+                  "  const a = pm.collectionVariables.get('seatAarav');",
+                  "  const p = row.seats[0];",
+                  "  pm.expect(a).to.not.eql(p);",
+                  "  pm.expect([a, p]).to.include('A1');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rohan's bookings show the two wished seats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "mine"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token3}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const row = pm.response.json().data.find(function (r) { return r.id === pm.collectionVariables.get('rohan1'); });",
+                  "pm.test('B1 and B2 (the group wish was free)', function () { pm.expect(row.seats).to.eql(['B1', 'B2']); pm.expect(row.preferredSeats).to.eql(['B1', 'B2']); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Neha (a group member) sees the same seats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "mine"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token4}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const row = pm.response.json().data.find(function (r) { return r.id === pm.collectionVariables.get('rohan1'); });",
+                  "pm.test('Not the requester, same seats', function () { pm.expect(row.isRequester).to.eql(false); pm.expect(row.seats).to.eql(['B1', 'B2']); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Karan wishes for A1 after the run (taken)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceId\": \"{{roomId}}\",\n  \"date\": \"{{date}}\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"purpose\": \"general_study\",\n  \"preferredSeats\": [\n    \"A1\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token5}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('karan1', data.data.id);",
+                  "pm.test('Seated at once on another seat, the wish stays saved', function () {",
+                  "  pm.expect(data.data.status).to.eql('confirmed');",
+                  "  pm.expect(data.data.seats.length).to.eql(1);",
+                  "  pm.expect(data.data.seats[0]).to.not.eql('A1');",
+                  "  pm.expect(data.data.preferredSeats).to.eql(['A1']);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rohan cancels the group booking",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/{{rohan1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "{{rohan1}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token3}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rohan's bookings show no seats for the cancelled booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "mine"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token3}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "const row = pm.response.json().data.find(function (r) { return r.id === pm.collectionVariables.get('rohan1'); });",
+                  "pm.test('Cancelled and no seats', function () { pm.expect(row.status).to.eql('cancelled'); pm.expect(row.seats).to.eql([]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Clean up",
+      "item": [
+        {
+          "name": "Delete request aarav1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reservations/{{aarav1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "reservations",
+                "{{aarav1}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete request priya1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reservations/{{priya1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "reservations",
+                "{{priya1}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete request rohan1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reservations/{{rohan1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "reservations",
+                "{{rohan1}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete request karan1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reservations/{{karan1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "reservations",
+                "{{karan1}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete the room with the seat map",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/resources/{{roomId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "resources",
+                "{{roomId}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete the room without a seat map",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/resources/{{plainId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "resources",
+                "{{plainId}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
