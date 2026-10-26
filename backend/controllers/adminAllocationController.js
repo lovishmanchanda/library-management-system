@@ -22,7 +22,8 @@ const decisionRow = (item, offerInfo) => {
         score: item.score,
         status: reservation.status,
         reason: reservation.reason,
-        offer: offerInfo
+        offer: offerInfo,
+        seats: reservation.status === "confirmed" ? reservation.seats || [] : []
     }
 }
 

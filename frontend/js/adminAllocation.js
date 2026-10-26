@@ -38,6 +38,7 @@ function buildAllocationPage() {
           <th>Time</th>
           <th>Purpose</th>
           <th>Group</th>
+          <th>Seats</th>
           <th>Tier</th>
           <th>Score</th>
           <th>Result</th>
@@ -111,6 +112,7 @@ function showAllocationDecisions(decisions) {
       d.startTime + " - " + d.endTime,
       PURPOSE_LABELS[d.purpose] || d.purpose,
       d.groupSize,
+      d.seats && d.seats.length > 0 ? d.seats.join(", ") : "-",
       d.tier,
       d.score,
       d.status,
