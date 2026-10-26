@@ -3,6 +3,8 @@ const {Resource} = require("../models/resourceModel")
 const {Reservation} = require("../models/reservationModel")
 const {getSeatsUsed} = require("../utils/allocation")
 const {getToday} = require("../utils/timeCheck")
+const {buildLayout} = require("../utils/layout")
+const {hasSeatMap} = require("../utils/seats")
 
 // the only types allowed for new or edited resources
 const ALLOWED_TYPES = [
@@ -15,7 +17,8 @@ const ALLOWED_TYPES = [
     "reading pod"
 ]
 
-// resourceData => the resource object we send (the old pages use "id")
+// resourceData => the resource object we send (the old pages use "id").
+// Phase 4: hasSeatMap and seatCount say if the room has a seat map. The map itself is only in the answer for one room
 const resourceData = (resource) => {
     return {
         id: resource._id,
@@ -24,8 +27,43 @@ const resourceData = (resource) => {
         zone: resource.zone,
         capacity: resource.capacity,
         active: resource.active,
-        image: resource.image
+        image: resource.image,
+        hasSeatMap: hasSeatMap(resource),
+        seatCount: hasSeatMap(resource) ? resource.layout.seats.length : 0
     }
+}
+
+// resourceDetails => resourceData plus the seat map (row, col and name of every seat), for one room
+const resourceDetails = (resource) => {
+    const data = resourceData(resource)
+    if (hasSeatMap(resource)) {
+        const seats = []
+        for (const seat of resource.layout.seats) {
+            seats.push({row: seat.row, col: seat.col, label: seat.label})
+        }
+        data.layout = {rows: resource.layout.rows, cols: resource.layout.cols, seats}
+    }
+    return data
+}
+
+// hasUpcomingBookings => true if the room has bookings that still wait or are confirmed from today on.
+// The seat names of these bookings would be wrong if the seat map changed, so the map is locked then
+const hasUpcomingBookings = async (resourceId) => {
+    const upcoming = await Reservation.countDocuments({
+        resource: resourceId,
+        status: {$in: ["pending", "confirmed", "unallocated", "waitlisted"]},
+        date: {$gte: getToday()}
+    })
+    return upcoming > 0
+}
+
+// readLayout => checks the layout the admin sent {rows, cols, cells} and builds the real one (names of the seats).
+// It gives back {layout} or {error}
+const readLayout = (body) => {
+    if (typeof body !== "object" || Array.isArray(body)) {
+        return {error: "layout must be an object with rows, cols and cells"}
+    }
+    return buildLayout(body.rows, body.cols, body.cells)
 }
 
 // getResources => list resources, optional ?type= and ?zone=. Students see only active ones
@@ -60,7 +98,7 @@ const getResourceById = async (req, res) => {
         if (!resource || (!resource.active && req.user.role !== "admin")) {
             return res.status(404).send({message: "Resource not found"})
         }
-        res.status(200).send({message: "Resource fetched successfully", data: resourceData(resource)})
+        res.status(200).send({message: "Resource fetched successfully", data: resourceDetails(resource)})
     } catch (error) {
         res.status(500).send({message: error.message})
     }
@@ -99,31 +137,47 @@ const getAvailability = async (req, res) => {
 // createResource => admin adds a new resource
 const createResource = async (req, res) => {
     try {
-        const {label, type, zone, capacity, active, image} = req.body
-        if (!label || !type || !capacity) {
-            return res.status(400).send({message: "Label, type and capacity are required"})
+        const {label, type, zone, capacity, active, image, layout} = req.body
+        const hasLayout = layout !== undefined && layout !== null
+        if (!label || !type || (!capacity && !hasLayout)) {
+            return res.status(400).send({message: "Label, type and capacity (or a seat map) are required"})
         }
         if (!ALLOWED_TYPES.includes(type)) {
             return res.status(400).send({message: "Type must be one of: " + ALLOWED_TYPES.join(", ")})
         }
-        if (!Number.isInteger(Number(capacity)) || Number(capacity) < 1) {
+
+        // a room with a seat map: the capacity is the number of seats, a typed capacity is ignored
+        let newLayout = undefined
+        let newCapacity = Number(capacity)
+        if (hasLayout) {
+            const result = readLayout(layout)
+            if (result.error) {
+                return res.status(400).send({message: result.error})
+            }
+            newLayout = result.layout
+            newCapacity = newLayout.seats.length
+        } else if (!Number.isInteger(newCapacity) || newCapacity < 1) {
             return res.status(400).send({message: "Capacity must be a whole number, 1 or more"})
         }
+
         const resource = await Resource.create({
             label,
             type,
             zone,
-            capacity: Number(capacity),
+            capacity: newCapacity,
+            layout: newLayout,
             active,
             image
         })
-        res.status(201).send({message: "Resource created successfully", data: resourceData(resource)})
+        res.status(201).send({message: "Resource created successfully", data: resourceDetails(resource)})
     } catch (error) {
         res.status(500).send({message: error.message})
     }
 }
 
-// updateResource => admin edits a resource. Only the fields sent are changed
+// updateResource => admin edits a resource. Only the fields sent are changed.
+// Phase 4: layout changes the seat map (the capacity then becomes the number of seats), layout null removes the map.
+// A seat map cannot be changed or removed while the room has upcoming bookings (409)
 const updateResource = async (req, res) => {
     try {
         const id = req.params.id
@@ -135,7 +189,7 @@ const updateResource = async (req, res) => {
             return res.status(404).send({message: "Resource not found"})
         }
 
-        const {label, type, zone, capacity, active, image} = req.body
+        const {label, type, zone, capacity, active, image, layout} = req.body
         // a migrated resource may have an old type, so only check the type when it changes
         if (type !== undefined && type !== resource.type && !ALLOWED_TYPES.includes(type)) {
             return res.status(400).send({message: "Type must be one of: " + ALLOWED_TYPES.join(", ")})
@@ -148,15 +202,42 @@ const updateResource = async (req, res) => {
         if (label !== undefined) updates.label = label
         if (type !== undefined) updates.type = type
         if (zone !== undefined) updates.zone = zone
-        if (capacity !== undefined) updates.capacity = Number(capacity)
         if (active !== undefined) updates.active = active
         if (image !== undefined) updates.image = image
-        if (Object.keys(updates).length === 0) {
+        // the capacity of a room with a seat map is the number of seats, so a typed capacity is ignored there
+        if (capacity !== undefined && !hasSeatMap(resource)) updates.capacity = Number(capacity)
+
+        // the seat map
+        let removeMap = false
+        if (layout !== undefined) {
+            if (layout === null) {
+                removeMap = hasSeatMap(resource)
+            } else {
+                const result = readLayout(layout)
+                if (result.error) {
+                    return res.status(400).send({message: result.error})
+                }
+                updates.layout = result.layout
+                updates.capacity = result.layout.seats.length
+            }
+            if ((removeMap || updates.layout) && await hasUpcomingBookings(resource._id)) {
+                return res.status(409).send({message: "This room has upcoming bookings. Cancel them first before you change or remove its seat map"})
+            }
+            if (removeMap && capacity !== undefined) {
+                updates.capacity = Number(capacity) // without a map the capacity is typed again
+            }
+        }
+
+        if (Object.keys(updates).length === 0 && !removeMap) {
             return res.status(400).send({message: "Nothing to update"})
         }
 
-        const data = await Resource.findByIdAndUpdate(id, updates, {new: true, runValidators: true})
-        res.status(200).send({message: "Resource updated successfully", data: resourceData(data)})
+        const change = {$set: updates}
+        if (removeMap) {
+            change.$unset = {layout: ""}
+        }
+        const data = await Resource.findByIdAndUpdate(id, change, {new: true, runValidators: true})
+        res.status(200).send({message: "Resource updated successfully", data: resourceDetails(data)})
     } catch (error) {
         res.status(500).send({message: error.message})
     }

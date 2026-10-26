@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cinzel:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/seats.css">
   <script>
     (function() {
       let currentUser = null;
@@ -253,6 +254,7 @@
               <th>Time</th>
               <th>Purpose</th>
               <th>Group</th>
+              <th>Seats</th>
               <th>Priority</th>
               <th>Status</th>
               <th>Reason</th>
@@ -302,12 +304,31 @@
             <input type="number" id="resourceCapacity" min="1" value="1" required>
           </label>
           <label>
+            Rows
+            <input type="number" id="resourceRows" min="1" max="20" value="5">
+          </label>
+          <label>
+            Columns
+            <input type="number" id="resourceCols" min="1" max="30" value="8">
+          </label>
+          <button type="button" id="drawMapBtn">Draw seat map</button>
+          <label>
             Active
             <input type="checkbox" id="resourceActive" checked>
           </label>
           <button type="submit" id="resourceSubmitBtn">Add resource</button>
           <button type="button" id="resourceCancelEditBtn" hidden>Cancel edit</button>
         </form>
+
+        <!-- the seat map editor: click a square to add a seat or to take it away -->
+        <div id="seatEditorBox" hidden>
+          <p class="hint">Click a square to add a seat or to remove it. Empty squares are aisles. The seats get names like A1, A2 ... and the number of seats becomes the capacity.</p>
+          <div id="seatEditor"></div>
+          <p id="seatEditorCount" style="margin: 10px 0;"></p>
+          <button type="button" id="fillMapBtn">Fill all squares</button>
+          <button type="button" id="clearMapBtn">Clear all squares</button>
+          <button type="button" id="removeMapBtn">Remove seat map</button>
+        </div>
 
         <table class="admin-table" id="resourcesTable">
           <thead>
@@ -316,6 +337,7 @@
               <th>Type</th>
               <th>Zone</th>
               <th>Capacity</th>
+              <th>Seat map</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -468,6 +490,7 @@
   <!-- Nav switching only — plumbing, already written -->
   <script src="js/adminNav.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/seatGrid.js"></script>
   <script src="js/adminPanel.js"></script>
   <script src="js/adminAllocation.js"></script>
   <script src="js/script.js"></script>

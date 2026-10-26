@@ -36,6 +36,17 @@ let RESERVATION_PURPOSES = {
   general_study: "General study"
 };
 
+// the seats of a reservation as text: the seats it got, or the seats it asked for while it waits
+function getSeatsText(reservation) {
+  if (reservation.seats && reservation.seats.length > 0) {
+    return reservation.seats.join(", ");
+  }
+  if (reservation.preferredSeats && reservation.preferredSeats.length > 0) {
+    return "wish: " + reservation.preferredSeats.join(", ");
+  }
+  return "—";
+}
+
 function getUserName(reservation) {
   return reservation.user ? reservation.user.name : "Unknown";
 }
@@ -135,6 +146,7 @@ async function renderReservationTable() {
       reservation.startTime + " - " + reservation.endTime,
       RESERVATION_PURPOSES[reservation.purpose] || reservation.purpose || "General study",
       reservation.groupSize || 1,
+      getSeatsText(reservation),
       reservation.priorityScore ?? "—",
       reservation.status,
       reservation.reason || "",
@@ -369,6 +381,7 @@ async function renderResourcesTable() {
       resource.type.replace("_", " "),
       resource.zone,
       resource.capacity,
+      resource.hasSeatMap ? resource.seatCount + " seats" : "No map",
       resource.active === false ? "Inactive" : "Active",
     ];
 
@@ -418,7 +431,140 @@ async function deleteResource(resource) {
   }
 }
 
-function loadResourceIntoForm(resource) {
+// ---------------------------------------------------------
+// Seat map editor (Phase 4)
+// The admin draws the seats of a room by clicking squares of a grid. The number of seats becomes the capacity.
+// ---------------------------------------------------------
+
+let editorSeats = null;     // null = the room has no seat map. Otherwise an object like { "0,0": true, "0,1": true }
+let removeSeatMap = false;  // true when the admin pressed "Remove seat map" for a room that had one
+
+// the name of a seat in the picture, for example "A3": the row letter and the number of the seat in that row
+function getEditorLabel(row, col) {
+  let number = 0;
+  for (let c = 0; c <= col; c++) {
+    if (editorSeats[row + "," + c]) {
+      number++;
+    }
+  }
+  return String.fromCharCode(65 + row) + number;
+}
+
+// what a square looks like in the editor: a seat or an empty place
+function getEditorCell(row, col) {
+  if (editorSeats[row + "," + col]) {
+    return { state: "free", label: getEditorLabel(row, col) };
+  }
+  return { state: "empty", label: "" };
+}
+
+// the admin clicked a square: add the seat, or take it away
+function clickEditorCell(row, col) {
+  let key = row + "," + col;
+  if (editorSeats[key]) {
+    delete editorSeats[key];
+  } else {
+    editorSeats[key] = true;
+  }
+  drawSeatEditor();
+}
+
+// draws the grid again and shows how many seats there are
+function drawSeatEditor() {
+  let box = document.getElementById("seatEditorBox");
+  let capacityInput = document.getElementById("resourceCapacity");
+
+  if (editorSeats === null) {
+    box.hidden = true;
+    capacityInput.readOnly = false;
+    return;
+  }
+
+  let rows = Number(document.getElementById("resourceRows").value);
+  let cols = Number(document.getElementById("resourceCols").value);
+  box.hidden = false;
+  drawSeatGrid(document.getElementById("seatEditor"), rows, cols, getEditorCell, clickEditorCell);
+
+  // the capacity is the number of seats, so the field is filled in and locked
+  let count = Object.keys(editorSeats).length;
+  document.getElementById("seatEditorCount").innerText = "Seats: " + count + " (this number is the capacity)";
+  capacityInput.value = count > 0 ? count : 1;
+  capacityInput.readOnly = true;
+}
+
+// "Draw seat map": a new map starts with every square a seat. If there is a map, the squares outside the new size are dropped
+function drawNewMap() {
+  let rows = Number(document.getElementById("resourceRows").value);
+  let cols = Number(document.getElementById("resourceCols").value);
+  if (!Number.isInteger(rows) || rows < 1 || rows > 20 || !Number.isInteger(cols) || cols < 1 || cols > 30) {
+    alert("Rows must be from 1 to 20 and columns from 1 to 30.");
+    return;
+  }
+
+  let oldSeats = editorSeats;
+  editorSeats = {};
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      let key = row + "," + col;
+      if (oldSeats === null || oldSeats[key]) {
+        editorSeats[key] = true;
+      }
+    }
+  }
+  removeSeatMap = false;
+  drawSeatEditor();
+}
+
+// "Fill all squares" and "Clear all squares"
+function setAllSquares(isSeat) {
+  if (editorSeats === null) return;
+  let rows = Number(document.getElementById("resourceRows").value);
+  let cols = Number(document.getElementById("resourceCols").value);
+  editorSeats = {};
+  if (isSeat) {
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        editorSeats[row + "," + col] = true;
+      }
+    }
+  }
+  drawSeatEditor();
+}
+
+// "Remove seat map": the room goes back to a plain capacity
+function removeTheMap() {
+  editorSeats = null;
+  removeSeatMap = true;
+  drawSeatEditor();
+}
+
+// the seats of the editor as a list like [{row: 0, col: 0}, ...] for the server
+function getEditorCells() {
+  let cells = [];
+  Object.keys(editorSeats).forEach((key) => {
+    let parts = key.split(",");
+    cells.push({ row: Number(parts[0]), col: Number(parts[1]) });
+  });
+  return cells;
+}
+
+// the seat map part of the data we send to the server (nothing if the room has no map and none was removed)
+function getLayoutToSend() {
+  if (editorSeats !== null) {
+    return {
+      rows: Number(document.getElementById("resourceRows").value),
+      cols: Number(document.getElementById("resourceCols").value),
+      cells: getEditorCells()
+    };
+  }
+  if (removeSeatMap) {
+    return null;
+  }
+  return undefined;
+}
+
+// loads a room into the form. For a room with a seat map we ask the server for the map
+async function loadResourceIntoForm(resource) {
   document.getElementById("resourceEditId").value = resource.id;
   document.getElementById("resourceLabel").value = resource.label;
   document.getElementById("resourceType").value = resource.type;
@@ -428,6 +574,24 @@ function loadResourceIntoForm(resource) {
 
   document.getElementById("resourceSubmitBtn").innerText = "Save Changes";
   document.getElementById("resourceCancelEditBtn").hidden = false;
+
+  editorSeats = null;
+  removeSeatMap = false;
+  if (resource.hasSeatMap) {
+    try {
+      let result = await apiGet("/resources/" + resource.id);
+      let layout = result.data.layout;
+      editorSeats = {};
+      layout.seats.forEach((seat) => {
+        editorSeats[seat.row + "," + seat.col] = true;
+      });
+      document.getElementById("resourceRows").value = layout.rows;
+      document.getElementById("resourceCols").value = layout.cols;
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+  drawSeatEditor();
 }
 
 function resetResourceForm() {
@@ -438,8 +602,15 @@ function resetResourceForm() {
   document.getElementById("resourceActive").checked = true;
   document.getElementById("resourceSubmitBtn").innerText = "Add Resource";
   document.getElementById("resourceCancelEditBtn").hidden = true;
+
+  editorSeats = null;
+  removeSeatMap = false;
+  document.getElementById("resourceRows").value = 5;
+  document.getElementById("resourceCols").value = 8;
+  drawSeatEditor();
 }
 
+// returns true when the server accepted it, so the form is only cleared after a success
 async function addResource(resource) {
   let newResource = {
     label: resource.label,
@@ -448,34 +619,49 @@ async function addResource(resource) {
     capacity: Number(resource.capacity),
     active: resource.active
   };
+  let layout = getLayoutToSend();
+  if (layout) {
+    newResource.layout = layout;
+  }
 
   try {
     await apiPost("/resources", newResource);
   } catch (error) {
     alert(error.message);
+    return false;
   }
   renderResourcesTable();
+  return true;
 }
 
 async function updateResource(id, resource) {
+  let changes = {
+    label: resource.label,
+    type: resource.type,
+    zone: resource.zone,
+    capacity: Number(resource.capacity),
+    active: resource.active
+  };
+  let layout = getLayoutToSend();
+  if (layout !== undefined) {
+    changes.layout = layout;
+  }
+
   try {
-    await apiPatch(`/resources/${id}`, {
-      label: resource.label,
-      type: resource.type,
-      zone: resource.zone,
-      capacity: Number(resource.capacity),
-      active: resource.active
-    });
+    await apiPatch(`/resources/${id}`, changes);
   } catch (error) {
+    // for example: the room has upcoming bookings, so its seat map cannot change
     alert(error.message);
+    return false;
   }
   renderResourcesTable();
+  return true;
 }
 
 function wireResourceForm() {
   let resourceForm = document.getElementById("resourceForm");
 
-  resourceForm.addEventListener("submit", function (e) {
+  resourceForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     let id = document.getElementById("resourceEditId").value;
@@ -488,19 +674,36 @@ function wireResourceForm() {
       active: document.getElementById("resourceActive").checked,
     };
 
-    if (id) {
-      updateResource(id, resource);
-    } else {
-      addResource(resource);
+    if (editorSeats !== null && Object.keys(editorSeats).length === 0) {
+      alert("Draw at least one seat, or remove the seat map.");
+      return;
     }
 
-    resetResourceForm();
+    let saved = false;
+    if (id) {
+      saved = await updateResource(id, resource);
+    } else {
+      saved = await addResource(resource);
+    }
+
+    if (saved) {
+      resetResourceForm();
+    }
   });
 
   document.getElementById("resourceCancelEditBtn")
     .addEventListener("click", function () {
       resetResourceForm();
     });
+
+  document.getElementById("drawMapBtn").addEventListener("click", drawNewMap);
+  document.getElementById("fillMapBtn").addEventListener("click", function () {
+    setAllSquares(true);
+  });
+  document.getElementById("clearMapBtn").addEventListener("click", function () {
+    setAllSquares(false);
+  });
+  document.getElementById("removeMapBtn").addEventListener("click", removeTheMap);
 }
 
 renderResourcesTable();

@@ -41,6 +41,8 @@ const reservationRow = (reservation, queuePosition) => {
         priorityScore: reservation.priorityScore,
         checkedIn: reservation.checkedIn,
         createdAt: reservation.createdAt,
+        preferredSeats: reservation.preferredSeats || [],
+        seats: reservation.status === "confirmed" ? reservation.seats || [] : [], // only a confirmed booking has seats
         offer: offerRow(reservation.offer),
         originalResource: reservation.originalResource && reservation.originalResource.label
             ? {id: reservation.originalResource._id, label: reservation.originalResource.label}
