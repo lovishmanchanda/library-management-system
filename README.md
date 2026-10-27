@@ -1,361 +1,287 @@
 <div align="center">
-<pre>
- █████╗ ████████╗██╗      █████╗ ███████╗    ██████╗  ██████╗  ██████╗ ███╗   ███╗
-██╔══██╗╚══██╔══╝██║     ██╔══██╗██╔════╝    ██╔══██╗██╔═══██╗██╔═══██╗████╗ ████║
-███████║   ██║   ██║     ███████║███████╗    ██████╔╝██║   ██║██║   ██║██╔████╔██║
-██╔══██║   ██║   ██║     ██╔══██║╚════██║    ██╔══██╗██║   ██║██║   ██║██║╚██╔╝██║
-██║  ██║   ██║   ███████╗██║  ██║███████║    ██║  ██║╚██████╔╝╚██████╔╝██║ ╚═╝ ██║
-╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝
-</pre>
 
-  <img src="https://img.shields.io/badge/Status-Active-brightgreen" alt="Status" />
-  <img src="https://img.shields.io/badge/Tech-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-blue" alt="Tech Stack" />
-  <img src="https://img.shields.io/badge/Database-JSON--Server-yellow" alt="Database" />
-  <br/><br/>
-  <a href="https://library-management-system-g2806haix.vercel.app/" target="_blank">
-    <img src="https://img.shields.io/badge/View%20Live%20Demo-Click%20Here-red?style=for-the-badge" alt="Live Demo" />
-  </a>
-  <br/><br/>
-  <img src="https://komarev.com/ghpvc/?username=atlas-room-demo&label=Project+Views&color=blue&style=flat" alt="Visitor Count" />
+# Atlas Room
+
+**A library room and seat reservation system with fair, priority-based allocation.**
+
+<img src="https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white" alt="Node.js and Express" />
+<img src="https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248?logo=mongodb&logoColor=white" alt="MongoDB Atlas" />
+<img src="https://img.shields.io/badge/Auth-JWT%20%2B%20bcrypt-blue" alt="JWT and bcrypt" />
+<img src="https://img.shields.io/badge/Frontend-Vanilla%20JS-F7DF1E?logo=javascript&logoColor=black" alt="Vanilla JavaScript" />
+
+<a href="https://atlas-room.onrender.com" target="_blank">
+  <img src="https://img.shields.io/badge/Live%20Demo-atlas--room.onrender.com-red?style=for-the-badge" alt="Live demo" />
+</a>
+
 </div>
 
 <br />
 
-Welcome to **Atlas Room**! A modern, smart **library seat reservation system** built entirely with **Vanilla JavaScript**. It ensures fair access to limited seating and academic resources using a dynamic **Priority Engine** that replaces traditional, easily-exploited First-Come-First-Serve (FCFS) systems. 
+Atlas Room lets students and staff request rooms and seats in a library. Instead of first come, first served, requests wait until the admin runs an **allocation**. The allocation ranks every request of a day by its purpose (a job interview beats general study), then by the requester's priority score, then by the time of the request, and gives out seats until the rooms are full. Students whose request does not fit get one alternative room, or can join a waitlist. Rooms have seat maps, so a confirmed booking comes with real seats such as `B2` or `C4, C5`.
+
+The live demo may take about 30 seconds to wake up on its first request.
 
 ---
 
 ## Table of Contents
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Tech Stack](#tech-stack)
-- [Architecture & System Flows](#architecture--system-flows)
-- [REST API Reference](#rest-api-reference)
-- [Project Structure](#project-structure)
-- [Future Roadmap](#future-roadmap)
-- [Getting Started](#getting-started)
+- [How it works](#how-it-works)
+- [1. Accounts and access](#1-accounts-and-access)
+- [2. Rooms, requests and allocation](#2-rooms-requests-and-allocation)
+- [3. When a room is full](#3-when-a-room-is-full)
+- [4. Seat maps](#4-seat-maps)
+- [5. Admin panel](#5-admin-panel)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Getting started](#getting-started)
+- [Demo data](#demo-data)
+- [Testing the API](#testing-the-api)
+- [Deployment](#deployment)
+- [Limits](#limits)
 - [Contributing](#contributing)
-- [Acknowledgements](#acknowledgements)
 
 ---
 
-## Features
-* **Dynamic Priority Engine:** Ranks users based on Academic Role (50%), Historical Reliability (30%), and Exam Proximity (20%).
-* **Smart Waitlist & Auto-Bumping:** High-priority users can bump lower-priority occupants to the waitlist when the library is fully booked.
-* **Anti-Cheat & Reliability Tracking:** No-shows instantly drop a user's reliability score ("strikes"). Three strikes trigger an automatic suspension.
-* **Admin Telemetry Dashboard:** Live room occupancy meters, Guardian Hold message management, and Force Confirm capabilities.
-* **Premium UI:** Glassmorphism UI, interactive golden constellation animations, and dark-mode aesthetics.
-
----
-
-## Screenshots
-
-<table align="center">
-  <tr>
-    <td align="center">
-      <b>Home & Priority Simulator</b><br/>
-      <img src="frontend/images/home.png" width="400" alt="Home page" />
-    </td>
-    <td align="center">
-      <b>Resource Reservation</b><br/>
-      <img src="frontend/images/reserve.png" width="400" alt="Reservation page" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <b>Admin Telemetry Dashboard</b><br/>
-      <img src="frontend/images/admin1.png" width="400" alt="Admin Telemetry 1" />
-    </td>
-    <td align="center">
-      <b>Admin Message Center</b><br/>
-      <img src="frontend/images/admin2.png" width="400" alt="Admin Telemetry 2" />
-    </td>
-  </tr>
-</table>
-
----
-
-## Tech Stack
-* **Frontend:** HTML5, CSS3, **Vanilla JavaScript (ES6)**
-* **Design:** Custom CSS Variables, Flexbox/Grid, Glassmorphism
-* **Backend:** [`json-server`](https://github.com/typicode/json-server) (Provides a full REST API on port `3000`)
-* **State:** Browser `localStorage`
-
----
-
-## Architecture & System Flows
-
-Below is the complete architectural breakdown of the Atlas Room system. **Click any section to expand and explore the interactive flowcharts!**
-
-<details>
-<summary><b>1. High-Level Architecture</b></summary>
-<br/>
-
-This diagram illustrates the core components of the system and how the Vanilla JS frontend communicates with the lightweight `json-server` backend.
+## How it works
 
 ```mermaid
 flowchart TD
-    subgraph Frontend ["Frontend (Browser)"]
-        Pages["HTML Pages"]
-        Logic["Vanilla JS Logic"]
-        Storage[("LocalStorage")]
-    end
-    
-    subgraph Backend ["Backend (Node.js)"]
-        API["REST API (json-server :3000)"]
-        DB[("db.json")]
-    end
-
-    Pages --> Logic
-    Logic <--> Storage
-    Logic -- "HTTP Fetch" --> API
-    API <--> DB
+    A["Student sends a request<br/>(room, date, time, purpose, group, seat wish)"] --> B["Request is pending"]
+    B --> C["Admin runs the allocation for the date"]
+    C --> D{"Do all seats of the<br/>group fit?"}
+    D -- yes --> E["Confirmed, seats assigned"]
+    D -- no --> F["Unallocated, with a reason"]
+    F --> G["One alternative room is offered<br/>(if a free one exists)"]
+    G -- accepted --> E
+    F --> H["Student can join the waitlist"]
+    H -- "a confirmed booking is cancelled" --> E
 ```
-</details>
 
-<details>
-<summary><b>2. User Authentication Flow</b></summary>
-<br/>
-
-The complete lifecycle for signing up, logging in securely, and maintaining session state entirely on the client-side.
-
-```mermaid
-sequenceDiagram
-    actor User
-    participant Browser
-    participant LocalStorage
-    participant JSONServer
-
-    %% Sign Up
-    User->>Browser: Fills Sign Up Form (sign_up.html)
-    Browser->>JSONServer: POST /users (New user object)
-    JSONServer-->>Browser: 201 Created
-    Browser-->>User: Redirect to login.html
-
-    %% Login
-    User->>Browser: Enters Email & Password
-    Browser->>JSONServer: GET /users
-    JSONServer-->>Browser: Returns Users Array
-    Browser->>Browser: Validate credentials against array
-    alt Invalid
-        Browser-->>User: Show Error Alert
-    else Valid
-        Browser->>LocalStorage: Save user object as `currentUser`
-        Browser-->>User: Redirect to index.html (Home)
-    end
-```
-</details>
-
-<details>
-<summary><b>3. Booking Engine Flow</b></summary>
-<br/>
-
-How users reserve a seat and are placed into the system, including conflict resolution triggers.
-
-```mermaid
-stateDiagram-v2
-    [*] --> SelectResource: User opens booking.html
-    SelectResource --> CheckAvailability: Selects Room/Seat, Date & Time
-    
-    state CheckAvailability {
-        [*] --> FetchReservations: GET /reservations
-        FetchReservations --> ConflictCheck: Check overlapping times
-    }
-    
-    CheckAvailability --> Available: No Conflict
-    CheckAvailability --> Conflict: Existing Reservation
-    
-    Available --> CreateReservation: User clicks "Confirm"
-    
-    Conflict --> WaitlistDecision: User opts to waitlist
-    WaitlistDecision --> PriorityResolution: (See Priority Engine Flow)
-    
-    CreateReservation --> Status_Confirmed: Booking successful
-    Status_Confirmed --> [*]
-```
-</details>
-
-<details>
-<summary><b>4. Priority Engine & Bumping Algorithm</b></summary>
-<br/>
-
-The core algorithm! A detailed breakdown of how a user's priority score is calculated dynamically and how conflicts are resolved when multiple people want the same seat.
-
-```mermaid
-flowchart TD
-    Start(["Calculate Priority Score"]) --> GetRole
-    GetRole --> |Faculty| Score50("Base 50")
-    GetRole --> |Student| CheckYear{"Final Year?"}
-    
-    CheckYear -->|Yes| Score100("Base 100")
-    CheckYear -->|No| CheckSem{"Semester > Midpoint?"}
-    
-    CheckSem -->|Yes| Score75("Base 75")
-    CheckSem -->|No| Score60("Base 60")
-    
-    Score50 --> CalcRel
-    Score100 --> CalcRel
-    Score75 --> CalcRel
-    Score60 --> CalcRel
-    
-    CalcRel["Calculate Reliability Score"] --> |"100 - (NoShowCount * 15)"| CalcExam["Calculate Exam Proximity"]
-    
-    CalcExam --> CheckExam{"Within Exam Window?"}
-    CheckExam -->|Yes| AddExam("Add Exam Bonus")
-    CheckExam -->|No| SkipExam("Skip Exam Bonus")
-    
-    AddExam --> FinalMath
-    SkipExam --> FinalMath
-    
-    FinalMath["Weighted Total: Role(50%) + Rel(30%) + Exam(20%)"] --> ReturnScore(["Return Score"])
-
-    ReturnScore --> ResolveConflict{"Are there Conflicting Bookings?"}
-    
-    ResolveConflict -->|No| ConfirmBooking(["Return confirmed"])
-    ResolveConflict -->|Yes| GetHighestPriority["Find Highest Priority among Conflicts"]
-    
-    GetHighestPriority --> CheckWin{"New Score > Highest Existing?"}
-    CheckWin -->|No| Waitlist(["Return waiting"])
-    CheckWin -->|Yes| BumpLoop["Loop through conflicts and PATCH status to bumped"]
-    BumpLoop --> ConfirmBooking
-```
-</details>
-
-<details>
-<summary><b>5. Admin & Telemetry Operations</b></summary>
-<br/>
-
-How administrators monitor the library, handle no-shows, and manage the automated waitlist promotion lifecycle.
-
-```mermaid
-sequenceDiagram
-    actor Admin
-    participant Browser
-    participant PriorityJS as priority.js
-    participant JSONServer
-
-    %% Handling No Shows
-    Admin->>Browser: Clicks "Mark No-show" on an Active Booking
-    Browser->>JSONServer: PATCH /reservations/:id (status: no_show)
-    Browser->>JSONServer: GET /users/:id (Fetch offending user)
-    JSONServer-->>Browser: User Data
-    
-    %% Striking User
-    Browser->>Browser: Increment user.noShowCount
-    alt noShowCount >= 3
-        Browser->>Browser: Suspend User (suspended = true)
-    end
-    Browser->>JSONServer: PATCH /users/:id (Update strikes/suspension)
-    
-    %% Promoting Waitlist
-    Browser->>PriorityJS: promoteWaitingReservation(resourceId, date, time)
-    PriorityJS->>JSONServer: GET /reservations
-    JSONServer-->>PriorityJS: All Reservations
-    PriorityJS->>PriorityJS: Filter for "waiting" or "bumped" overlapping the cancelled slot
-    PriorityJS->>PriorityJS: Sort by Priority (Score DESC, Date ASC)
-    
-    alt Eligible Reservation Found
-        PriorityJS->>JSONServer: PATCH /reservations/:winnerId (status: confirmed)
-    end
-    
-    Browser-->>Admin: Refresh Admin Dashboard UI
-```
-</details>
+Requests for a date that already has an allocation run are allocated at once on the seats that are left.
 
 ---
 
-## REST API Reference
+## 1. Accounts and access
 
-The local `json-server` backend runs on `http://localhost:3000` and provides the following RESTful endpoints:
+- **Sign up and log in** with email and password. Passwords are stored as bcrypt hashes. Login gives a JWT (valid for one day) that the browser sends as `Authorization: Bearer <token>`.
+- **Roles:** `student`, `faculty`, `librarian` and `admin`. A new account is always a student; only an admin can change a role.
+- **The server decides everything** that matters: role, status, score and capacity. The browser only displays.
+- **Suspension:** an admin can suspend a user for 1, 7 or 30 days or without an end date. A suspended user cannot make bookings.
+- **Profile:** the profile page shows the user's details and priority breakdown. The API also lets a user edit their own name, department, course and semester.
 
-| Endpoint | Method | Description |
-|---|---|---|
-| `/users` | `GET`, `POST` | Fetch user directory or register a new user. |
-| `/users/:id` | `PATCH` | Update user telemetry (e.g., add no-show strikes, suspend). |
-| `/resources` | `GET` | Fetch all available library seats/rooms and their capacities. |
-| `/reservations` | `GET`, `POST` | Fetch booking grid or submit a new reservation. |
-| `/reservations/:id` | `PATCH` | Update booking status (`confirmed`, `bumped`, `waiting`, `no_show`). |
-| `/examWindows` | `GET` | Fetch active university examination periods for priority calculations. |
+## 2. Rooms, requests and allocation
+
+**Rooms.** Rooms (resources) have a label, a type, a zone, a capacity and an active flag. Types: study room, discussion room, carrel, computer station, seminar hall, community study hall and reading pod. An admin creates, edits and deactivates rooms; a room with upcoming bookings cannot be deleted.
+
+**Requests.** A student asks for a room on a date and time (on the hour or half hour) with a purpose:
+
+| Purpose | Tier |
+|---|---|
+| Job interview | 5 |
+| End semester exam | 4 |
+| Mid semester exam | 3 |
+| Quarterly test, project work | 2 |
+| General study | 1 |
+
+A higher tier always wins over a lower tier. Interviews and exams also need the day of the event. Exam requests are accepted only inside an **exam window** of the same kind that the admin has created.
+
+**Groups.** A request can include other registered users by email. A group is never split: it gets all of its seats or none. Nobody in the group can have another pending or confirmed booking at the same time.
+
+**Priority score.** Inside a tier, requests are ranked by `role score + reliability score`:
+- role score: faculty 15, other staff 10, students up to 10 depending on how far they are in their course;
+- reliability score: 10, minus 3 for each no-show in the last 90 days.
+
+Ties go to the earlier request. The admin marks no-shows after a booking has started.
+
+**Allocation.** `POST /api/admin/allocate` (the "Run allocation" button in the admin panel) ranks the pending requests of a date and confirms them one by one while seats are left. A confirmed booking is never taken away by a later request. Each result has a plain-language reason that the student sees on **My Bookings**. The admin can also force-confirm or cancel a single booking, and the run history is kept.
+
+## 3. When a room is full
+
+- **One alternative offer.** A request that does not fit gets at most one offer: another room of the same type, with enough free seats for the whole group at the same time (same zone first). The student accepts or rejects it. An offer holds no seats and expires after `OFFER_MINUTES` or when the booking starts.
+- **Waitlist.** An unallocated student can choose to join the waitlist. When a confirmed booking of that room and time is cancelled, waitlisted requests are tried in the usual order and confirmed automatically. The student sees their position in the queue.
+- **Recommendations.** The booking page suggests rooms that have enough free seats for the chosen date, time and group size.
+
+## 4. Seat maps
+
+- A room can have a **seat map**: a grid of up to 20 rows by 30 columns. Seats are named by row letter and number (`A1`, `A2`, ... `B1`); aisles are empty squares and are not counted. The capacity of such a room is its number of seats.
+- **Admin:** draws the map in the Resources tab by clicking squares, sees the seat count while drawing, and can load an existing map for editing. A map cannot be changed while the room has upcoming bookings.
+- **Student:** on the booking page the seat picker shows the map for the chosen date and time with taken seats marked. The student picks as many seats as the group size. **The choice is a wish, not a lock**: the request is still ranked by priority.
+- **Assignment:** when a booking is confirmed it gets the wished seats if they are free; otherwise seats side by side in one row, otherwise the nearest free seats. A seat is never given to two bookings at the same time. The seats appear on My Bookings and in the admin tables.
+
+## 5. Admin panel
+
+| Tab | What it does |
+|---|---|
+| Dashboard | bookings of today, room and zone occupancy meters, student messages ("Guardian Hold") with read and reply |
+| Reservations | every booking with purpose, group size, score, status, reason, offer, queue position and seats; force confirm, cancel, no-show, delete |
+| Resources | create, edit, deactivate and delete rooms; draw seat maps |
+| Users | find a user, see the priority breakdown and booking history, suspend or unsuspend (changing a role is available through the API) |
+| Allocation | run the allocation for a date, see the decisions with seats and the history of the runs |
+| Settings | manage exam windows |
 
 ---
 
-## Project Structure
+## Tech stack
+- **Backend:** Node.js, Express 4, Mongoose 8, MongoDB Atlas, `bcrypt`, `jsonwebtoken`, `dotenv`
+- **Frontend:** HTML, CSS and vanilla JavaScript (no framework, no build step), served by the Express app
+- **API testing:** Postman collections in `postman/` (they work in Thunder Client too)
 
-```text
-library-management-system/
-├── db.json                 # JSON Server database (users, reservations, resources)
-├── package.json            # Node project configuration
-├── README.md               # You are here
-└── frontend/               # Vanilla JS Frontend Application Root
-    ├── index.html          # Landing page & Priority Engine Simulator
-    ├── booking.html        # Main resource reservation interface
-    ├── myBooking.html      # User's active/past reservations dashboard
-    ├── profile.html        # User stats and reliability breakdown
-    ├── login.html          # Authentication - Login
-    ├── sign_up.html        # Authentication - Sign Up
-    ├── admin.html          # Administrator Telemetry Dashboard
-    ├── about.html          # Team and project information
-    ├── css/                # Stylesheets (app.css, index.css, admin.css)
-    ├── js/                 # Vanilla JS Logic layer
-    │   ├── script.js       # Global auth state and UI utilities
-    │   ├── priority.js     # Core priority algorithms & waitlist promotion logic
-    │   ├── adminPanel.js   # Admin dashboard telemetry and data grids
-    │   └── adminNav.js     # Admin tab routing
-    └── images/             # Static assets and video tours
+## Project structure
+
+The backend follows MVC. The frontend pages are the view.
+
+```
+.
+├── backend/
+│   ├── server.js            # starts the server and waits for the database
+│   ├── app.js               # mounts the routes and serves ../frontend
+│   ├── config/db.js         # MongoDB connection
+│   ├── models/              # Mongoose models: user, resource, reservation, exam window, message, allocation run
+│   ├── controllers/         # request handling and rules
+│   ├── Routes/              # one route file per area, with the access level of each route
+│   ├── middleware/          # verifyToken, requireRole, error handlers
+│   ├── utils/               # priority score, allocation, seats, seat map layout, offers, waitlist, time checks
+│   └── scripts/             # room and demo data scripts, token helper
+├── frontend/
+│   ├── *.html               # home, booking, my bookings, profile, login, sign up, admin, about
+│   ├── js/                  # api.js (all API calls), page scripts, seatGrid.js (seat map drawing)
+│   ├── css/
+│   └── images/
+├── docs/
+│   └── api-reference.md     # every endpoint with request and response details
+└── postman/                 # 12 Postman collections
 ```
 
 ---
 
-## Future Roadmap
-We are actively developing Atlas Room to be the ultimate resource management tool. Here is what's coming next:
-- [ ] **Automated Suspensions:** Instantly lock accounts that accumulate 3+ No-Show strikes.
-- [ ] **Waitlist Position Visibility:** Allow users to see their real-time rank on the waitlist in their dashboard.
-- [ ] **Smart Slot Suggestions:** Suggest alternative times/rooms when a user's choice is fully booked.
-- [ ] **Self Check-In Protocol:** Require users to verify their presence via a check-in code within 15 minutes of booking start.
+## Getting started
 
----
+### Prerequisites
+- [Node.js](https://nodejs.org/) 18 or newer
+- A MongoDB database. A free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster works.
 
-## Getting Started
-
-### 1. Prerequisites
-You will need [Node.js](https://nodejs.org/) installed on your machine to run the mock backend.
-
-### 2. Start the Backend API
-We use `json-server` to mock the REST backend. Open a terminal in the root directory and run:
+### 1. Clone and install
 ```bash
-npx json-server db.json
+git clone https://github.com/lovishmanchanda/library-management-system.git
+cd library-management-system/backend
+npm install
 ```
-*(Keep this terminal window running in the background).*
 
-### 3. Launch the Frontend
-Since the entire frontend is built with **Vanilla JS**, there is no build step! 
-- Simply double-click `frontend/index.html` in your file explorer to open it in your browser.
-- Alternatively, use an extension like **Live Server** in VS Code for hot-reloading.
+### 2. Configure the environment
+Copy `.env.example` to `.env` and fill it in:
+
+| Variable | Meaning |
+|---|---|
+| `PORT` | port of the server (default `3000`) |
+| `MONGODB_URI` | MongoDB connection string |
+| `JWT_SECRET` | a long random secret that signs the tokens |
+| `LIBRARY_UTC_OFFSET_MINUTES` | time zone of the library in minutes from UTC (`330` for India) |
+| `OFFER_MINUTES` | how long an alternative offer stays open (default `60`) |
+
+A good `JWT_SECRET`:
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
+
+### 3. Run
+```bash
+npm run dev      # with nodemon (restarts on changes)
+npm start        # plain node
+```
+Open `http://localhost:3000`. The Express app serves the frontend and the API from the same address, so the frontend calls the API with the relative path `/api` (set in `frontend/js/api.js`).
+
+### 4. Create an admin
+Sign up in the browser, then make that user an admin directly in the database (change `role` to `admin`, for example in the Atlas data browser). After that, that admin can change other roles through `PATCH /api/admin/users/:id`. Rooms are created by an admin in the Resources tab, or with the room script below.
+
+---
+
+## Demo data
+
+The scripts in `backend/scripts` fill an empty database with a realistic library. Each one prints what it would do and writes only when you add `--confirm`. Run them from the `backend` folder.
+
+| Script | What it does |
+|---|---|
+| `node scripts/seedRooms.js` | creates 6 rooms with seat maps (Central Reading Hall, Silent Study Hall, Digital Lab, Seminar Hall, Collaboration Hall, Interview Room). Safe to run again |
+| `node scripts/seedDemoUsers.js` | creates demo students and faculty (through the real sign-up route, so the server must be running), exam windows and sample messages |
+| `node scripts/seedDemoRequests.js` | (server running) books about 100 requests for a two-week period through the real API: allocation runs, offers, waitlist, cancellations and no-shows. The last days stay pending so you can press "Run allocation" yourself |
+| `node scripts/removeDemoData.js` | removes the demo users and their bookings again (rooms stay) |
+| `node scripts/makeToken.js admin` | prints a test token for a role (for Postman) |
+
+The order is rooms, users, requests. The dates are fixed in the scripts (the two weeks start on Monday 26 Oct 2026, `FIRST_DAY` in `seedDemoRequests.js`), and the library does not accept bookings in the past, so move `FIRST_DAY` (and the mid semester window in `seedDemoUsers.js`) to upcoming dates before you run them later, and check the dry run first.
+
+Everything the demo scripts create is marked, so `removeDemoData.js` deletes exactly that. The demo accounts and their shared password are defined in `backend/scripts/demoUsersList.js` and `backend/scripts/demoApi.js`.
+
+---
+
+## Testing the API
+
+Every endpoint is described in [`docs/api-reference.md`](docs/api-reference.md).
+
+**Postman collections** (`postman/`), each with tests and a `baseUrl` variable:
+
+| File | Covers |
+|---|---|
+| `01_auth_users` | sign up, log in, profile, users, suspension |
+| `02_resources_reservations` | rooms, availability, requests |
+| `03_admin_exam_messages` | admin booking actions, exam windows, messages |
+| `04_priority_allocation` | purposes, tiers and priority ranking |
+| `05_group_reservations` | groups |
+| `06_admin_allocation` | allocation runs |
+| `07_offers_recommendations` | alternative offers, recommendations |
+| `08_waitlist_reservations` | waitlist (student side) |
+| `09_admin_offers_waitlist` | offers and waitlist (admin side) |
+| `10_seat_assignment` | seat assignment and seat map |
+| `11_seat_wishes` | seat wishes |
+| `12_seat_maps_resources` | seat maps in rooms |
+
+Set `baseUrl` to `http://localhost:3000/api` or `https://atlas-room.onrender.com/api`. The collections create their own test data and remove most of it again.
+
+**By hand** (Postman, Thunder Client or curl): log in, copy the token, and send it in the `Authorization: Bearer <token>` header.
+
+```bash
+curl -X POST https://atlas-room.onrender.com/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"you@example.com","password":"your-password"}'
+```
+
+---
+
+## Deployment
+
+The backend serves the frontend, so one web service is enough. For Render:
+
+1. Create a **Web Service** from the repository. Root directory `backend`, build command `npm install`, start command `npm start`.
+2. Add the environment variables from the table above (Render sets `PORT` itself).
+3. In MongoDB Atlas, open **Network Access** and allow the address of the service (`0.0.0.0/0` for a hosted service whose address changes).
+
+---
+
+## Limits
+
+- The allocation is started by an admin. There is no schedule.
+- Seats are a wish until the allocation decides; they are not held while a request is pending.
+- Allocating one room is done one request at a time inside a single server process. Running several server instances against the same database would need a database-level lock.
+- Side-by-side seats for a group are given when possible, otherwise the nearest free seats.
+- A seat map cannot be changed while the room has upcoming bookings.
+- A no-show lowers the reliability score for 90 days but never suspends a user automatically.
+- Tokens last one day and are kept in the browser's `localStorage`. The server checks every permission itself.
+- Offers expire when they are read or answered, not in the background.
+- Deleting a room that has no upcoming bookings leaves its old bookings without a room name. Deactivate rooms instead of deleting them.
 
 ---
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome! 
-Feel free to check the issues page if you want to contribute to the priority engine or suggest new features.
+Issues and pull requests are welcome.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork the repository
+2. Create a branch (`git checkout -b feature/short-name`)
+3. Commit your changes
+4. Push the branch and open a pull request
 
----
-
-## Acknowledgements
-
-Developed for institutions seeking modern, fair, and intelligent resource allocation. 
-If you find this project helpful, please consider giving it a star on GitHub!
+Keep the code in the style of the project: plain `async` functions with `try/catch`, one controller function per endpoint, validation written inline, and responses as `{ message, data }`.
 
 ---
-<br />
+
 <div align="center">
-  <b>Atlas Room</b> - Redefining the Library Experience.
+  <b>Atlas Room</b> — built by Jasandeep Singh, Lovish Manchanda and Krishna Rawat.
 </div>
-<br />
-
